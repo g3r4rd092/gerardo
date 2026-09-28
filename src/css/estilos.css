@@ -1,0 +1,24 @@
+#root {
+    width: 100%;
+    max-width: none;
+}
+
+.card-login{
+    height: 600px;
+}
+
+.h1-ppm{
+    font-size: 22px;
+    text-align: center;
+    color: #005f9f;
+}
+
+.div-logo{
+    margin-top: -20%;
+}
+
+.btn-bis{
+    background-color: #005f9f;
+    color: #ffffff;
+    font-weight: bold;
+}
