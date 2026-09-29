@@ -1,13 +1,16 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import 'bootstrap/dist/css/bootstrap.min.css'
-//import App from './App.jsx'
-import AppPPM from './AppPPM.jsx'
+import { createRoot } from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
+
+import './index.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import './css/sidebars.css';
+
+import App from './App';
 import './css/estilos.css';
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <AppPPM />
-  </StrictMode>,
-)
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>
+);

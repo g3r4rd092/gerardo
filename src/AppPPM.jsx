@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import bis1 from './assets/imagenes/bis-1.jpg';
 import bisLogo from './assets/imagenes/bis-logo.jpg';
 
@@ -9,6 +10,7 @@ function AppPPM() {
     });
 
     const [errores, setErrores] = useState({});
+    const navigate = useNavigate();
 
     const validar = () => {
         let nuevosErrores = {};
@@ -39,31 +41,25 @@ function AppPPM() {
         }
 
         try {
-            const response = await fetch(
-                "http://localhost:3001/login",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        usuario: form.usuario,
-                        password: form.password,
-                    }),
-                }
-            );
+            const respuesta = await fetch("http://localhost:3001/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(form)
+            });
 
-            const data = await response.json();
+            const datos = await respuesta.json();
 
-            if (response.ok && data.success) {
-                alert("Bienvenido");
+            if (datos.success) {
+                localStorage.setItem(
+                    "usuario",
+                    JSON.stringify(datos.usuario)
+                );
 
-                // Aquí después puedes navegar a otra página
-                // navigate("/inicio");
+                navigate("/inicio");
             } else {
-                setErrores({
-                    login: data.mensaje || "Credenciales incorrectas",
-                });
+                alert(datos.mensaje);
             }
         } catch (error) {
             console.error(error);
