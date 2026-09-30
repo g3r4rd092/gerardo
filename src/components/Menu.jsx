@@ -1,5 +1,6 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
+
 function Menu() {
     const location = useLocation();
     const navigate = useNavigate();
@@ -21,6 +22,7 @@ function Menu() {
     };
 
     return (
+
         <main>
             <aside
                 className="flex-shrink-0 p-3 bg-white"
@@ -40,9 +42,9 @@ function Menu() {
                 </Link>
 
                 {/* Menú */}
-                <ul className="list-unstyled ps-0">
+                <ul className="list-unstyled ps-0" style={{ textAlign: "justify" }}>
 
-                    {/* INICIO */}
+                    {/* USUARIOS*/}
                     <li className="mb-1">
                         <button
                             className="btn btn-toggle align-items-center rounded collapsed"
@@ -50,7 +52,7 @@ function Menu() {
                             data-bs-target="#inicio-collapse"
                             aria-expanded="false"
                         >
-                            Inicio
+                            Usuarios
                         </button>
 
                         <div
@@ -61,10 +63,10 @@ function Menu() {
 
                                 <li>
                                     <Link
-                                        to="/inicio"
-                                        className={menuActivo("/inicio")}
+                                        to="/registro-usuarios"
+                                        className={menuActivo("/registro-usuarios")}
                                     >
-                                        Inicio
+                                        Crear usuario
                                     </Link>
                                 </li>
 
@@ -73,7 +75,16 @@ function Menu() {
                                         to="/dashboard"
                                         className={menuActivo("/dashboard")}
                                     >
-                                        Dashboard
+                                        Modificar usuario
+                                    </Link>
+                                </li>
+
+                                <li>
+                                    <Link
+                                        to="/dashboard"
+                                        className={menuActivo("/dashboard")}
+                                    >
+                                        Baja usuario
                                     </Link>
                                 </li>
 
@@ -82,7 +93,7 @@ function Menu() {
                     </li>
 
 
-                    {/* ÓRDENES */}
+                    {/* PROYECTOS */}
                     <li className="mb-1">
                         <button
                             className="btn btn-toggle align-items-center rounded collapsed"
@@ -90,7 +101,7 @@ function Menu() {
                             data-bs-target="#ordenes-collapse"
                             aria-expanded="false"
                         >
-                            Órdenes
+                            Proyectos
                         </button>
 
                         <div
@@ -104,7 +115,7 @@ function Menu() {
                                         to="/ordenes"
                                         className={menuActivo("/ordenes")}
                                     >
-                                        Todas las órdenes
+                                        Crear proyecto
                                     </Link>
                                 </li>
 
@@ -113,7 +124,16 @@ function Menu() {
                                         to="/ordenes/nueva"
                                         className={menuActivo("/ordenes/nueva")}
                                     >
-                                        Nueva orden
+                                        Modificar proyecto
+                                    </Link>
+                                </li>
+
+                                <li>
+                                    <Link
+                                        to="/ordenes/nueva"
+                                        className={menuActivo("/ordenes/nueva")}
+                                    >
+                                        Eliminar proyecto
                                     </Link>
                                 </li>
 
@@ -122,7 +142,7 @@ function Menu() {
                     </li>
 
 
-                    {/* PRODUCTOS */}
+                    {/* ACTIVIDADES */}
                     <li className="mb-1">
                         <button
                             className="btn btn-toggle align-items-center rounded collapsed"
@@ -130,7 +150,7 @@ function Menu() {
                             data-bs-target="#productos-collapse"
                             aria-expanded="false"
                         >
-                            Productos
+                            Actividades
                         </button>
 
                         <div
@@ -144,7 +164,7 @@ function Menu() {
                                         to="/productos"
                                         className={menuActivo("/productos")}
                                     >
-                                        Productos
+                                        Crear actividad
                                     </Link>
                                 </li>
 
@@ -153,7 +173,16 @@ function Menu() {
                                         to="/productos/nuevo"
                                         className={menuActivo("/productos/nuevo")}
                                     >
-                                        Nuevo producto
+                                        Modificar actividad
+                                    </Link>
+                                </li>
+
+                                <li>
+                                    <Link
+                                        to="/productos/nuevo"
+                                        className={menuActivo("/productos/nuevo")}
+                                    >
+                                        Eliminar actividad
                                     </Link>
                                 </li>
 
@@ -162,20 +191,20 @@ function Menu() {
                     </li>
 
 
-                    {/* CLIENTES */}
+                    {/* RIESGOS */}
                     <li className="mb-1">
                         <button
                             className="btn btn-toggle align-items-center rounded collapsed"
                             data-bs-toggle="collapse"
-                            data-bs-target="#clientes-collapse"
+                            data-bs-target="#riesgos-collapse"
                             aria-expanded="false"
                         >
-                            Clientes
+                            Riesgos
                         </button>
 
                         <div
                             className="collapse"
-                            id="clientes-collapse"
+                            id="riesgos-collapse"
                         >
                             <ul className="btn-toggle-nav list-unstyled fw-normal pb-1 small">
 
@@ -184,7 +213,7 @@ function Menu() {
                                         to="/clientes"
                                         className={menuActivo("/clientes")}
                                     >
-                                        Clientes
+                                        Crear riesgo
                                     </Link>
                                 </li>
 
@@ -193,13 +222,92 @@ function Menu() {
                                         to="/clientes/nuevo"
                                         className={menuActivo("/clientes/nuevo")}
                                     >
-                                        Nuevo cliente
+                                        Modificar riesgo
+                                    </Link>
+                                </li>
+
+                                <li>
+                                    <Link
+                                        to="/clientes/nuevo"
+                                        className={menuActivo("/clientes/nuevo")}
+                                    >
+                                        Eliminar riesgo
                                     </Link>
                                 </li>
 
                             </ul>
                         </div>
                     </li>
+
+                    {/* INCIDENCIAS */}
+                    <li className="mb-1">
+                        <button
+                            className="btn btn-toggle align-items-center rounded collapsed"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#incidencias-collapse"
+                            aria-expanded="false"
+                        >
+                            Incidencias
+                        </button>
+
+                        <div
+                            className="collapse"
+                            id="incidencias-collapse"
+                        >
+                            <ul className="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+
+                                <li>
+                                    <Link
+                                        to="/clientes"
+                                        className={menuActivo("/clientes")}
+                                    >
+                                        Crear incidencia
+                                    </Link>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </li>
+
+                    {/* DASHBOARD */}
+                    <li className="mb-1">
+                        <button
+                            className="btn btn-toggle align-items-center rounded collapsed"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#dashboard-collapse"
+                            aria-expanded="false"
+                        >
+                            Dashboard
+                        </button>
+
+                        <div
+                            className="collapse"
+                            id="dashboard-collapse"
+                        >
+                            <ul className="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+
+                                <li>
+                                    <Link
+                                        to="/clientes"
+                                        className={menuActivo("/clientes")}
+                                    >
+                                        Gráfica general
+                                    </Link>
+                                </li>
+
+                                <li>
+                                    <Link
+                                        to="/clientes"
+                                        className={menuActivo("/clientes")}
+                                    >
+                                        Gráfica por proyectos
+                                    </Link>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </li>
+
 
 
                     {/* SEPARADOR */}
@@ -215,7 +323,7 @@ function Menu() {
                             data-bs-target="#account-collapse"
                             aria-expanded="false"
                         >
-                            Cuenta
+                            Mi perfil
                         </button>
 
                         <div
@@ -289,9 +397,7 @@ function Menu() {
                 </div>
 
             </aside>
-            <script src="./assets/dist/js/bootstrap.bundle.min.js"></script>
 
-            <script src="./js/sidebars.js"></script>
         </main>
 
 

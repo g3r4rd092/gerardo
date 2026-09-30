@@ -3,22 +3,38 @@
     max-width: none;
 }
 
-.card-login{
+.card-login {
     height: 600px;
 }
 
-.h1-ppm{
+.h1-ppm {
     font-size: 22px;
     text-align: center;
     color: #005f9f;
 }
 
-.div-logo{
+.div-logo {
     margin-top: -20%;
 }
 
-.btn-bis{
+.btn-bis {
     background-color: #005f9f;
     color: #ffffff;
     font-weight: bold;
 }
+
+.card-registration .select-input.form-control[readonly]:not([disabled]) {
+    font-size: 16px;
+    line-height: 2.15;
+    padding-left: .75em;
+    padding-right: .75em;
+}
+
+.card-registration .select-arrow {
+    top: 13px;
+}
+
+#form3Example8{
+    font-size: 16px;
+}
+
