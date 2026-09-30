@@ -4,6 +4,33 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 function Menu() {
     const location = useLocation();
     const navigate = useNavigate();
+    const token = localStorage.getItem("token");
+
+    const iniciarSesion = async () => {
+        const respuesta = await fetch(
+            "http://localhost:3001/inicio",
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+        );
+
+        const datos = await respuesta.json();
+
+        if (datos.success) {
+            localStorage.setItem("token", datos.token);
+
+            localStorage.setItem(
+                "usuario",
+                JSON.stringify(datos.usuario)
+            );
+
+            navigate("/inicio");
+        } else {
+            alert(datos.mensaje);
+        }
+    };
 
     // Obtener el usuario guardado después del login
     const usuario = JSON.parse(localStorage.getItem("usuario"));
@@ -112,8 +139,8 @@ function Menu() {
 
                                 <li>
                                     <Link
-                                        to="/ordenes"
-                                        className={menuActivo("/ordenes")}
+                                        to="/alta-proyecto"
+                                        className={menuActivo("/alta-proyecto")}
                                     >
                                         Crear proyecto
                                     </Link>
