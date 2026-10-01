@@ -1,4 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import IconoBis from "../assets/imagenes/bis-logo.jpg";
 
 
 function Menu() {
@@ -63,9 +64,14 @@ function Menu() {
                     to="/inicio"
                     className="d-flex align-items-center pb-3 mb-3 link-dark text-decoration-none border-bottom"
                 >
-                    <span className="fs-5 fw-semibold">
+                    <img
+                        src={IconoBis}
+                        alt="Bis logo"
+                        style={{ width: "200px", height: "80px" }}
+                    />
+                    {/*<span className="fs-5 fw-semibold ms-2">
                         Sistema PPM
-                    </span>
+                    </span>*/}
                 </Link>
 
                 {/* Menú */}
@@ -408,7 +414,7 @@ function Menu() {
 
                         {/* Nombre */}
                         <div className="text-truncate">
-                            <strong>
+                            <strong id="strongNombre-usuario">
                                 {usuario?.nombre || "Usuario"}
                             </strong>
 

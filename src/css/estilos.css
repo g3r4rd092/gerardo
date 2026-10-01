@@ -35,7 +35,7 @@
 }
 
 #form3Example8 {
-    font-size: 16px;
+    font-size: 12px;
 }
 
 #div-proyecto {
@@ -45,8 +45,7 @@
 .form-group {
     display: flex;
     align-items: center;
-    gap: 10px;    
-    margin-bottom: 20px;
+    gap: 10px;        
 }
 
 .form-group label {
@@ -71,3 +70,8 @@
     align-items: baseline;
     justify-items: stretch;
 }*/
+
+#strongNombre-usuario {
+    font-size: 16px;
+    color: #005f9f;
+}

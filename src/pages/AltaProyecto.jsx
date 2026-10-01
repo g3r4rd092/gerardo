@@ -1,62 +1,15 @@
 import Menu from "../components/Menu";
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useCatalogos } from "../hooks/useCatalogos";
+import { useState } from "react";
 import "../css/estilos.css";
 import ImgGestion from "../assets/imagenes/gestion-2.jpg";
 
 function AltaProyecto() {
 
-    const [clientes, setClientes] = useState([]);
+    const { clientes, prioridades, consecutivo } = useCatalogos();
+
     const [cliente, setCliente] = useState("");
-
-    const [prioridades, setPrioridades] = useState([]);
     const [prioridad, setPrioridad] = useState("");
-
-    const [consecutivo, setConsecutivo] = useState(1);
-
-
-    useEffect(() => {
-        cargarClientes();
-        cargarPrioridades();
-        cargarConsecutivo();
-    }, []);
-
-    const cargarClientes = async () => {
-        try {
-            const response = await fetch("http://localhost:3001/clientes");
-            const data = await response.json();
-
-            setClientes(data);
-        } catch (error) {
-            console.error("Error:", error);
-        }
-    };
-
-    const cargarPrioridades = async () => {
-        try {
-            const response = await fetch("http://localhost:3001/prioridades");
-            const data = await response.json();
-
-            setPrioridades(data);
-        } catch (error) {
-            console.error("Error:", error);
-        }
-    };
-
-    const cargarConsecutivo = async () => {
-        try {
-            const response = await fetch("http://localhost:3001/consecutivo");
-            const data = await response.json();
-
-            if (data.length > 0 && data[0].consecutivo !== null) {
-                setConsecutivo(data[0].consecutivo);
-            }
-            
-        } catch (error) {
-            console.error("Error:", error);
-        }
-    };
-
 
     return (
 
@@ -94,7 +47,7 @@ function AltaProyecto() {
                                                 <label htmlFor="form3Example8" className="form-label">Cliente</label>
                                                 <select className="form-select" aria-label="Default select example" value={cliente} onChange={(e) => setCliente(e.target.value)}>
                                                     <option selected>Seleccionar cliente</option>
-                                                     {clientes.map((item) => (
+                                                    {clientes.map((item) => (
                                                         <option
                                                             key={item.idcliente}
                                                             value={item.nombre}

@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const pool = require("./db");
+const bcrypt = require("bcrypt");
 
 const verificarToken = require("./middleware/auth");
 
@@ -30,73 +31,75 @@ app.get(
 
 // Login
 app.post("/login", async (req, res) => {
+
   try {
+
     const { usuario, password } = req.body;
 
     console.log("Correo:", usuario);
-    console.log("Password:", password);
 
     const resultado = await pool.query(
-      `SELECT *
-             FROM usuario
-             WHERE correo = $1
-             AND contrasena = $2`,
-      [usuario.trim(), password.trim()]
+      `
+            SELECT *
+            FROM usuario
+            WHERE correo = $1
+            `,
+      [usuario.trim()]
     );
 
-    if (resultado.rows.length > 0) {
+    if (resultado.rows.length === 0) {
 
-      const usuario = resultado.rows[0];
-
-      const token = jwt.sign(
-        {
-          id: usuario.id_usuario,
-          correo: usuario.correo
-        },
-        SECRET_KEY,
-        {
-          expiresIn: "8h"
-        }
-      );
-
-      res.json({
-        success: true,
-        token,
-        usuario
-      });
-
-    } else {
-      res.json({
+      return res.json({
         success: false,
         mensaje: "Usuario o contraseña incorrectos"
       });
+
     }
 
+    const usuarioDB = resultado.rows[0];
+
+    const passwordValido = await bcrypt.compare(
+      password.trim(),
+      usuarioDB.contrasena
+    );
+
+    if (!passwordValido) {
+
+      return res.json({
+        success: false,
+        mensaje: "Usuario o contraseña incorrectos"
+      });
+
+    }
+
+    const token = jwt.sign(
+      {
+        id: usuarioDB.id_usuario,
+        correo: usuarioDB.correo
+      },
+      SECRET_KEY,
+      {
+        expiresIn: "8h"
+      }
+    );
+
+    delete usuarioDB.contrasena;
+
+    res.json({
+      success: true,
+      token,
+      usuario: usuarioDB
+    });
+
   } catch (error) {
+
     console.error("ERROR EN LOGIN:", error);
+
     res.status(500).json({
       success: false,
       mensaje: "Error interno del servidor"
     });
-  }
-});
 
-//Obtener perfiles del catálogo de BD
-app.get("/perfiles", async (req, res) => {
-  try {
-    const resultado = await pool.query(`
-      SELECT idperfil, descripcion
-      FROM perfil_usuario
-      ORDER BY descripcion
-    `);
-
-    res.json(resultado.rows);
-  } catch (error) {
-    console.error("Error al obtener perfiles:", error);
-    res.status(500).json({
-      success: false,
-      mensaje: "Error al obtener perfiles"
-    });
   }
 });
 
@@ -115,6 +118,25 @@ app.get("/clientes", async (req, res) => {
     res.status(500).json({
       success: false,
       mensaje: "Error al obtener clientes"
+    });
+  }
+});
+
+//Obtener clientes del catálogo de BD
+app.get("/perfiles", async (req, res) => {
+  try {
+    const resultado = await pool.query(`
+      SELECT idperfil, descripcion
+      FROM perfil_usuario
+      ORDER BY descripcion
+    `);
+
+    res.json(resultado.rows);
+  } catch (error) {
+    console.error("Error al obtener perfiles:", error);
+    res.status(500).json({
+      success: false,
+      mensaje: "Error al obtener perfiles"
     });
   }
 });
@@ -151,6 +173,60 @@ app.get("/consecutivo", async (req, res) => {
     res.status(500).json({
       success: false,
       mensaje: "Error al obtener el consecutivo"
+    });
+  }
+});
+
+//Enpoint para registrar un nuevo usuario
+app.post("/usuarios", async (req, res) => {
+  try {
+
+    const {
+      nombre,
+      apepat,
+      apemat,
+      correo,
+      password,
+      perfil
+    } = req.body;
+
+    const passwordHash = await bcrypt.hash(password, 10);
+
+    console.log("PASSWORD ORIGINAL:", password);
+    console.log("PASSWORD HASH:", passwordHash);
+
+    const nuevoUsuario = await pool.query(
+      `INSERT INTO usuario
+            (
+                nombre,
+                apepat,
+                apemat,
+                correo,
+                contrasena,
+                id_perfil
+            )
+            VALUES (
+            UPPER($1),UPPER($2),UPPER($3),$4,$5,$6)
+            RETURNING *`,
+      [
+        nombre,
+        apepat,
+        apemat,
+        correo,
+        passwordHash,
+        perfil
+      ]
+    );
+
+    res.status(201).json({
+      mensaje: "Usuario registrado correctamente",
+      usuario: nuevoUsuario.rows[0]
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      mensaje: "Error al registrar usuario"
     });
   }
 });

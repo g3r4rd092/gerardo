@@ -1,123 +1,239 @@
 import Menu from "../components/Menu";
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useCatalogos } from "../hooks/useCatalogos";
+import { registrarUsuario } from "../services/usuarioService";
 import "../css/estilos.css";
-import ImgGestion from "../assets/imagenes/gestion.jpg";
 
 function RegistroUsuarios() {
 
     const [form, setForm] = useState({
         nombre: "",
-        apellido: "",
+        apepat: "",
+        apemat: "",
         correo: "",
         password: "",
+        confirmPassword: "",
+        perfil: ""
     });
 
-    const [perfiles, setPerfiles] = useState([]);
-    const [perfil, setPerfil] = useState("");
+    const { perfiles } = useCatalogos();
 
-    
+    const guardarUsuario = async () => {
 
-    useEffect(() => {
-        cargarPerfiles();        
-    }, []);
-
-    const cargarPerfiles = async () => {
         try {
-            const response = await fetch("http://localhost:3001/perfiles");
-            const data = await response.json();
 
-            setPerfiles(data);
+            if (
+                !form.nombre ||
+                !form.apepat ||
+                !form.apemat ||
+                !form.correo ||
+                !form.password ||
+                !form.confirmPassword ||
+                !form.perfil
+            ) {
+                alert("Todos los campos son obligatorios");
+                return;
+            }
+
+            if (form.password !== form.confirmPassword) {
+                alert("Las contraseñas no coinciden");
+                return;
+            }
+
+            const usuario = {
+                nombre: form.nombre,
+                apepat: form.apepat,
+                apemat: form.apemat,
+                correo: form.correo,
+                password: form.password,
+                perfil: form.perfil
+            };
+
+            const respuesta = await registrarUsuario(usuario);
+
+            alert(respuesta.mensaje || "Usuario registrado correctamente");
+
+            setForm({
+                nombre: "",
+                apepat: "",
+                apemat: "",
+                correo: "",
+                password: "",
+                confirmPassword: "",
+                perfil: ""
+            });
+
         } catch (error) {
-            console.error("Error:", error);
+
+            console.error(error);
+            alert("Error al registrar usuario");
+
         }
     };
-    
+
     return (
-
-
         <div className="d-flex">
-
             <Menu />
-
             <div className="container-fluid p-4">
                 <main className="flex-grow-1">
-
                     <div className="row d-flex justify-content-center align-items-center h-100" id="div-proyecto">
                         <div className="col">
                             <div className="card card-registration my-4">
                                 <div className="row g-0" style={{ width: "100%" }}>
-                                    {/*<div className="col-xl-6 d-none d-xl-block" style={{ alignContent: "center" }}>
-                                        <img src={ImgGestion}
-                                            alt="Gestion proyectos" className="img-fluid"
-                                            style={{ borderTopLeftRadius: '.25rem', borderBottomLeftRadius: '.25rem' }} />
-                                    </div>*/}
                                     <div>
                                         <div className="card-body p-md-5 text-black" style={{ marginTop: "-5%" }}>
-                                            <h3 className="mb-5 text-uppercase">Registro de Usuarios</h3>
 
-                                            <div data-mdb-input-init className="form-outline mb-4 form-group" id="div-form-proyecto" >
+                                            <h3 className="mb-5 text-uppercase">
+                                                Registro de Usuarios
+                                            </h3>
+
+                                            {/* Nombre */}
+                                            <div data-mdb-input-init className="form-outline form-group" id="div-form-proyecto" >
                                                 <label htmlFor="form3Example8" className="form-label">Nombre completo</label>
-                                                <input type="text" id="form3Example8" className="form-control form-control-lg" />
+                                                <input
+                                                    type="text"
+                                                    className="form-control form-control-lg mb-3"
+                                                    id="form3Example8"                                                    
+                                                    value={form.nombre}
+                                                    onChange={(e) =>
+                                                        setForm({
+                                                            ...form,
+                                                            nombre: e.target.value
+                                                        })
+                                                    }
+                                                />
                                             </div>
 
-                                            <div data-mdb-input-init className="form-outline mb-4 form-group" id="div-form-proyecto">
+                                            {/* Apellido paterno */}
+                                            <div data-mdb-input-init className="form-outline form-group" id="div-form-proyecto" >
                                                 <label htmlFor="form3Example8" className="form-label">Apellido paterno</label>
-                                                <input type="text" id="form3Example8" className="form-control form-control-lg" />
+                                                <input
+                                                    type="text"
+                                                    className="form-control form-control-lg mb-3"
+                                                    id="form3Example8"                                                    
+                                                    value={form.apepat}
+                                                    onChange={(e) =>
+                                                        setForm({
+                                                            ...form,
+                                                            apepat: e.target.value
+                                                        })
+                                                    }
+                                                />
                                             </div>
 
-                                            <div data-mdb-input-init className="form-outline mb-4 form-group" id="div-form-proyecto">
+                                            {/* Apellido materno */}
+                                            <div data-mdb-input-init className="form-outline form-group" id="div-form-proyecto" >
                                                 <label htmlFor="form3Example8" className="form-label">Apellido materno</label>
-                                                <input type="text" id="form3Example8" className="form-control form-control-lg" />
+                                                <input
+                                                    type="text"
+                                                    className="form-control form-control-lg mb-3"
+                                                    id="form3Example8"
+                                                    value={form.apemat}
+                                                    onChange={(e) =>
+                                                        setForm({
+                                                            ...form,
+                                                            apemat: e.target.value
+                                                        })
+                                                    }
+                                                />
                                             </div>
 
-                                            <div data-mdb-input-init className="form-outline mb-4 form-group" id="div-form-proyecto">
-                                                <label htmlFor="form3Example8" className="form-label">Email</label>
-                                                <input type="email" id="form3Example8" className="form-control form-control-lg" />
+                                            {/* Correo */}
+                                            <div data-mdb-input-init className="form-outline form-group" id="div-form-proyecto" >
+                                                <label htmlFor="form3Example8" className="form-label">Correo electrónico</label>
+                                                <input
+                                                    type="email"
+                                                    className="form-control form-control-lg mb-3"
+                                                    id="form3Example8"
+                                                    value={form.correo}
+                                                    onChange={(e) =>
+                                                        setForm({
+                                                            ...form,
+                                                            correo: e.target.value
+                                                        })
+                                                    }
+                                                />
                                             </div>
 
-                                            <div data-mdb-input-init className="form-outline mb-4 form-group" id="div-form-proyecto">
-                                                <label htmlFor="form3Example8" className="form-label">Password</label>
-                                                <input type="password" id="form3Example8" className="form-control form-control-lg" />
+                                            {/* Password */}
+                                            <div data-mdb-input-init className="form-outline form-group" id="div-form-proyecto" >
+                                                <label htmlFor="form3Example8" className="form-label">Contraseña</label>
+                                                <input
+                                                    type="password"
+                                                    className="form-control form-control-lg mb-3"
+                                                    id="form3Example8"
+                                                    value={form.password}
+                                                    onChange={(e) =>
+                                                        setForm({
+                                                            ...form,
+                                                            password: e.target.value
+                                                        })
+                                                    }
+                                                />
                                             </div>
 
-                                            <div data-mdb-input-init className="form-outline mb-4 form-group" id="div-form-proyecto">
-                                                <label htmlFor="form3Example8" className="form-label">Confirmar Password</label>
-                                                <input type="password" id="form3Example8" className="form-control form-control-lg" />
+                                            {/* Confirmar Password */}
+                                            <div data-mdb-input-init className="form-outline form-group" id="div-form-proyecto" >
+                                                <label htmlFor="form3Example8" className="form-label">Confirmar contraseña</label>
+                                                <input
+                                                    type="password"
+                                                    className="form-control form-control-lg mb-3"
+                                                    id="form3Example8"                                                    
+                                                    value={form.confirmPassword}
+                                                    onChange={(e) =>
+                                                        setForm({
+                                                            ...form,
+                                                            confirmPassword: e.target.value
+                                                        })
+                                                    }
+                                                />
                                             </div>
 
-                                            <div data-mdb-input-init className="form-outline mb-4 form-group" id="div-form-proyecto">
+                                            {/* Perfil */}
+                                            <div data-mdb-input-init className="form-outline form-group" id="div-form-proyecto" >
                                                 <label htmlFor="form3Example8" className="form-label">Perfil</label>
-                                                <select className="form-select" aria-label="Default select example" value={perfil} onChange={(e) => setPerfil(e.target.value)}>
-                                                    <option selected>Seleccionar perfil</option>
+                                                <select
+                                                    className="form-select mb-3"
+                                                    value={form.perfil}
+                                                    onChange={(e) =>                                                        
+                                                        setForm({
+                                                            ...form,
+                                                            perfil: e.target.value
+                                                        })
+                                                    }
+                                                >
+                                                    <option value="">
+                                                        Seleccionar perfil
+                                                    </option>
+
                                                     {perfiles.map((item) => (
                                                         <option
                                                             key={item.idperfil}
-                                                            value={item.idperfil}
+                                                            value={item.descripcion}
                                                         >
                                                             {item.descripcion}
                                                         </option>
                                                     ))}
-
                                                 </select>
                                             </div>
 
                                             <div className="d-flex justify-content-end pt-3">
-                                                <input className="btn btn-bis" type="submit" value="Registrar usuario" />
+                                                <input
+                                                    className="btn btn-bis"
+                                                    type="button"
+                                                    value="Registrar usuario"
+                                                    onClick={guardarUsuario}
+                                                />
                                             </div>
-
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-
                 </main>
             </div>
-        </div>
+        </div >
     );
 }
-
 export default RegistroUsuarios;
