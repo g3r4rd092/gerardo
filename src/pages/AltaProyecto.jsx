@@ -2,7 +2,6 @@ import Menu from "../components/Menu";
 import { useCatalogos } from "../hooks/useCatalogos";
 import { useState } from "react";
 import "../css/estilos.css";
-import ImgGestion from "../assets/imagenes/gestion-2.jpg";
 
 function AltaProyecto() {
 

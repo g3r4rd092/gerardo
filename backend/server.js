@@ -231,6 +231,116 @@ app.post("/usuarios", async (req, res) => {
   }
 });
 
+//Endpoint para buscar un usuario por correo o id
+app.get("/usuarios/:correo", async (req, res) => {
+
+  try {
+
+    const { correo } = req.params;
+
+    const resultado = await pool.query(
+      `
+            SELECT *
+            FROM usuario
+            WHERE correo = $1
+            `,
+      [correo]
+    );
+
+    if (resultado.rows.length === 0) {
+
+      return res.json({
+        success: false
+      });
+
+    }
+
+    res.json({
+      success: true,
+      usuario: resultado.rows[0]
+    });
+
+  } catch (error) {
+
+    console.error(error);
+
+    res.status(500).json({
+      success: false
+    });
+
+  }
+
+});
+
+//Enpoint para actualizar un usuario existente
+app.put("/usuarios/:id", async (req, res) => {
+
+  try {
+
+    const { id } = req.params;
+
+    const {
+      nombre,
+      apepat,
+      apemat,
+      correo,
+      perfil
+    } = req.body;
+
+    await pool.query(
+      `
+            UPDATE usuario
+            SET nombre = UPPER($1),
+                apepat = UPPER($2),
+                apemat = UPPER($3),
+                correo = $4,
+                id_perfil = $5
+            WHERE id_usuario = $6
+            `,
+      [
+        nombre,
+        apepat,
+        apemat,
+        correo,
+        perfil,
+        id
+      ]
+    );
+
+    res.json({
+      mensaje: "Usuario actualizado correctamente"
+    });
+
+  } catch (error) {
+
+    console.error(error);
+
+    res.status(500).json({
+      mensaje: "Error al actualizar usuario"
+    });
+
+  }
+});
+
+//Obtener estados de proyectos del catálogo de BD
+app.get("/estados-proyectos", async (req, res) => {
+  try {
+    const resultado = await pool.query(`
+      SELECT idproyecto, descripcion
+      FROM estado_proyecto
+      ORDER BY descripcion
+    `);
+
+    res.json(resultado.rows);
+  } catch (error) {
+    console.error("Error al obtener estados de proyectos:", error);
+    res.status(500).json({
+      success: false,
+      mensaje: "Error al obtener estados de proyectos"
+    });
+  }
+});
+
 
 app.listen(3001, () => {
   console.log("================================");

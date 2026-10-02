@@ -1,0 +1,92 @@
+.gantt-container {
+    padding: 20px;
+    background: #ffffff;
+    flex: 1;
+    overflow: hidden;
+}
+
+.gantt-scroll {
+    overflow-x: auto;
+    overflow-y: hidden;
+    width: 100%;
+    height: 60%;
+}
+
+.gantt-header {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(61, 1fr);
+    border-bottom: 1px solid #ddd;
+}
+
+.dia {
+    text-align: center;
+    font-size: 11px;
+    padding: 3px 0;
+    border-right: 1px solid #eee;
+}
+
+.gantt-calendar-row {
+    display: flex;
+    align-items: center;
+}
+
+.gantt-row {
+    display: flex;
+    margin-top: 15px;
+    align-items: center;
+}
+
+.meses {
+    flex: 1;
+    display: flex;
+}
+
+.mes {
+    flex: 1;
+    text-align: center;
+    font-weight: bold;
+    background: #f5f5f5;
+    padding: 8px;
+    border: 1px solid #ddd;
+}
+
+.proyecto-info {
+    width: 250px;
+    min-width: 250px;
+    max-width: 250px;
+    font-size: 12px;
+}
+
+.timeline {
+    flex: 1;
+    position: relative;
+    height: 40px;
+    border: 1px solid #ddd;
+
+    background-image:
+        repeating-linear-gradient(to right,
+            #e5e5e5,
+            #e5e5e5 1px,
+            transparent 1px,
+            transparent calc(100% / 61));
+}
+
+.barra-gantt {
+    position: absolute;
+    top: 5px;
+    height: 28px;
+    /*background: #0d6efd;*/
+    color: white;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.gantt-calendar-row,
+.gantt-row {
+    min-width: 1200px;
+}

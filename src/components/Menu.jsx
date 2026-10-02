@@ -51,9 +51,9 @@ function Menu() {
 
     return (
 
-        <main>
+        <main> 
             <aside
-                className="flex-shrink-0 p-3 bg-white"
+                className="flex-shrink-0 p-3 bg-white aside-scroll"
                 style={{
                     width: "280px",
                     minHeight: "100vh"
@@ -105,8 +105,8 @@ function Menu() {
 
                                 <li>
                                     <Link
-                                        to="/dashboard"
-                                        className={menuActivo("/dashboard")}
+                                        to="/modifica-usuarios"
+                                        className={menuActivo("/modifica-usuarios")}
                                     >
                                         Modificar usuario
                                     </Link>
@@ -243,8 +243,8 @@ function Menu() {
 
                                 <li>
                                     <Link
-                                        to="/clientes"
-                                        className={menuActivo("/clientes")}
+                                        to="/riesgos"
+                                        className={menuActivo("/riesgos")}
                                     >
                                         Crear riesgo
                                     </Link>
@@ -321,8 +321,8 @@ function Menu() {
 
                                 <li>
                                     <Link
-                                        to="/clientes"
-                                        className={menuActivo("/clientes")}
+                                        to="/gantt-dashboard"
+                                        className={menuActivo("/gantt-dashboard")}
                                     >
                                         Gráfica general
                                     </Link>
