@@ -44,10 +44,11 @@ function Menu() {
 
     // Determinar si una ruta está activa
     const menuActivo = (ruta) => {
-        return location.pathname === ruta
-            ? "link-dark rounded active"
-            : "link-dark rounded";
-    };
+  return location.pathname.includes(ruta)
+    ? "activo"
+    : "";
+};
+
 
     return (
 
@@ -194,8 +195,8 @@ function Menu() {
 
                                 <li>
                                     <Link
-                                        to="/productos"
-                                        className={menuActivo("/productos")}
+                                        to="/alta-actividad"
+                                        className={menuActivo("/alta-actividad")}
                                     >
                                         Crear actividad
                                     </Link>

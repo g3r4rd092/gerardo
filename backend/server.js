@@ -341,6 +341,66 @@ app.get("/estados-proyectos", async (req, res) => {
   }
 });
 
+//Endpoint para buscar un proyecto o id
+app.get("/proyecto/:id", async (req, res) => {
+
+  try {
+
+    const { id } = req.params;
+
+    const resultado = await pool.query(
+      `
+            SELECT id_proyecto, nombre
+            FROM proyecto
+            WHERE id_proyecto = $1
+            `,
+      [id]
+    );
+
+    if (resultado.rows.length === 0) {
+
+      return res.json({
+        success: false
+      });
+
+    }
+
+    res.json({
+      success: true,
+      proyecto: resultado.rows[0]
+    });
+
+  } catch (error) {
+
+    console.error(error);
+
+    res.status(500).json({
+      success: false
+    });
+
+  }
+
+});
+
+//Obtener responsables del catálogo de BD
+app.get("/responsables", async (req, res) => {
+  try {
+    const resultado = await pool.query(`
+      SELECT id_empleado, nombre, apepat, apemat
+      FROM usuario
+      ORDER BY nombre
+    `);
+
+    res.json(resultado.rows);
+  } catch (error) {
+    console.error("Error al obtener responsables:", error);
+    res.status(500).json({
+      success: false,
+      mensaje: "Error al obtener responsables"
+    });
+  }
+});
+
 
 app.listen(3001, () => {
   console.log("================================");
@@ -348,3 +408,6 @@ app.listen(3001, () => {
   console.log("http://localhost:3001");
   console.log("================================");
 });
+
+
+

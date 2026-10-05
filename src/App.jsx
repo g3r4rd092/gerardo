@@ -5,6 +5,7 @@ import RegistroUsuarios from './pages/RegistroUsuarios';
 import AltaProyecto from './pages/AltaProyecto';
 import ModificaUsuarios from './pages/ModificaUsuarios';
 import GanttDashboard from './pages/GanttDashboard';
+import AltaActividad from './pages/AltaActividad';
 
 function App() {
   return (
@@ -14,7 +15,8 @@ function App() {
       <Route path="/registro-usuarios" element={<RegistroUsuarios />} />
       <Route path="/alta-proyecto" element={<AltaProyecto />} />
       <Route path="/modifica-usuarios" element={<ModificaUsuarios />} />
-      <Route path="/gantt-dashboard" element={<GanttDashboard />} />      
+      <Route path="/gantt-dashboard" element={<GanttDashboard />} />  
+      <Route path="/alta-actividad" element={<AltaActividad />} />    
     </Routes>
   );
 }

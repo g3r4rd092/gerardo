@@ -7,7 +7,8 @@ export const useCatalogos = () => {
     const [prioridades, setPrioridades] = useState([]);
     const [consecutivo, setConsecutivo] = useState(1);
     const [perfiles, setPerfiles] = useState([]);
-    const [estados, setEstados] = useState([]);
+    const [estados, setEstados] = useState([]);    
+    const [responsables, setResponsables] = useState([]);
 
     useEffect(() => {
         cargarDatos();
@@ -20,20 +21,22 @@ export const useCatalogos = () => {
                 prioridadesRes,
                 consecutivoRes,
                 perfilesRes,
-                estadosRes,
+                estadosRes,                
+                responsablesRes
             ] = await Promise.all([
                 fetch(`${API_URL}/clientes`),
                 fetch(`${API_URL}/prioridades`),
                 fetch(`${API_URL}/consecutivo`),
                 fetch(`${API_URL}/perfiles`),
-                fetch(`${API_URL}/estados-proyectos`)
+                fetch(`${API_URL}/estados-proyectos`),                
+                fetch(`${API_URL}/responsables`)
             ]);
 
             setClientes(await clientesRes.json());
             setPrioridades(await prioridadesRes.json());
             setPerfiles(await perfilesRes.json());
-            setEstados(await estadosRes.json());
-
+            setEstados(await estadosRes.json());            
+            setResponsables(await responsablesRes.json());
             const consecutivoData = await consecutivoRes.json();
 
             if (
@@ -52,6 +55,7 @@ export const useCatalogos = () => {
         prioridades,
         consecutivo,
         perfiles,
-        estados
+        estados,        
+        responsables
     };
 };

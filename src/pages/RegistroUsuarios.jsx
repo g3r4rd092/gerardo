@@ -201,6 +201,7 @@ function RegistroUsuarios() {
                                                             perfil: e.target.value
                                                         })
                                                     }
+                                                    style={{ fontSize: "12px", padding: "0.5rem" }}
                                                 >
                                                     <option value="">
                                                         Seleccionar perfil
