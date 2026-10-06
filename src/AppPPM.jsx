@@ -52,9 +52,19 @@ function AppPPM() {
             const datos = await respuesta.json();
 
             if (datos.success) {
+
+                localStorage.setItem(
+                    "token",
+                    datos.token
+                );
+
                 localStorage.setItem(
                     "usuario",
                     JSON.stringify(datos.usuario)
+                );
+
+                console.log("Token guardado:",
+                    localStorage.getItem("token")
                 );
 
                 navigate("/inicio");

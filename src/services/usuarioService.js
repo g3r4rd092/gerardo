@@ -19,29 +19,53 @@ export const registrarUsuario = async (usuario) => {
     return data;
 };
 
-export const actualizarUsuario = async () => {
+export const actualizarUsuario = async (usuario) => {
 
     try {
 
         const response = await fetch(
-            `${API_URL}/usuarios/${form.id_usuario}`,
+            `${API_URL}/usuarios/${usuario.id_usuario}`,
             {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify(form)
+                body: JSON.stringify(usuario)
             }
         );
 
-        const data = await response.json();
-
-        alert(data.mensaje);
+        return await response.json();
 
     } catch (error) {
 
         console.error(error);
-        alert("Error al actualizar");
+
+        return {
+            success: false,
+            mensaje: "Error al actualizar"
+        };
+    }
+};
+
+export const eliminarEmpleado = async (id) => {
+
+    const response = await fetch(
+        `${API_URL}/usuarios/${id}`,
+        {
+            method: "DELETE"
+        }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+
+        throw new Error(
+            data.mensaje ||
+            "Error al dar de baja al empleado"
+        );
 
     }
+
+    return data;
 };

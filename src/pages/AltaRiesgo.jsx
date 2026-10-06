@@ -1,14 +1,10 @@
 import Menu from "../components/Menu";
 import { useState } from "react";
-import { useCatalogos } from "../hooks/useCatalogos";
-import { registrarUsuario } from "../services/usuarioService";
-import "../css/estilos.css";
 
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import "sweetalert2/src/sweetalert2.scss";
 
-
-function RegistroUsuarios() {
+function AltaRiesgo(){
 
     const [form, setForm] = useState({
         nombre: "",
@@ -19,75 +15,6 @@ function RegistroUsuarios() {
         confirmPassword: "",
         perfil: ""
     });
-
-    const { perfiles } = useCatalogos();
-
-    const guardarUsuario = async () => {
-
-        try {
-
-            if (
-                !form.nombre ||
-                !form.apepat ||
-                !form.apemat ||
-                !form.correo ||
-                !form.password ||
-                !form.confirmPassword ||
-                !form.perfil
-            ) {
-                Swal.fire({
-                title: "Error",
-                text: "Todos los campos son obligatorios",
-                icon: "error"
-            });
-                return;
-            }
-
-            if (form.password !== form.confirmPassword) {
-                Swal.fire({
-                title: "Error",
-                text: "Las contraseñas no coinciden",
-                icon: "error"
-            });
-                return;
-            }
-
-            const usuario = {
-                nombre: form.nombre,
-                apepat: form.apepat,
-                apemat: form.apemat,
-                correo: form.correo,
-                password: form.password,
-                perfil: form.perfil
-            };
-
-            const respuesta = await registrarUsuario(usuario);
-
-            Swal.fire({
-                title: "Operación completada",
-                text: respuesta.mensaje,
-                icon: "success"
-            });
-
-            setForm({
-                nombre: "",
-                apepat: "",
-                apemat: "",
-                correo: "",
-                password: "",
-                confirmPassword: "",
-                perfil: ""
-            });
-
-        } catch (error) {
-            Swal.fire({
-                title: "Error",
-                text: "Error al registrar empleado" || error.message,
-                icon: "error"
-            });
-
-        }
-    };
 
     return (
         <div className="d-flex">
@@ -254,5 +181,6 @@ function RegistroUsuarios() {
             </div>
         </div >
     );
+
 }
-export default RegistroUsuarios;
+export default AltaRiesgo;

@@ -231,6 +231,42 @@ app.post("/usuarios", async (req, res) => {
   }
 });
 
+//Enpoint para registrar estados de riesgo
+app.post("/estadoRiesgo", async (req, res) => {
+  try {
+
+    const {
+      descripcion
+    } = req.body;
+
+    
+
+    const nuevoEstadoRiesgo = await pool.query(
+      `INSERT INTO estado_riesgo
+            (
+                descripcion
+            )
+            VALUES (
+            UPPER($1))
+            RETURNING *`,
+      [
+        descripcion
+      ]
+    );
+
+    res.status(201).json({
+      mensaje: "Estado de riesgo registrado correctamente",
+      usuario: nuevoEstadoRiesgo.rows[0]
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      mensaje: "Error al registrar estado de riesgo"
+    });
+  }
+});
+
 //Endpoint para buscar un usuario por correo o id
 app.get("/usuarios/:correo", async (req, res) => {
 
@@ -295,7 +331,7 @@ app.put("/usuarios/:id", async (req, res) => {
                 apemat = UPPER($3),
                 correo = $4,
                 id_perfil = $5
-            WHERE id_usuario = $6
+            WHERE id_empleado = $6
             `,
       [
         nombre,
@@ -401,6 +437,148 @@ app.get("/responsables", async (req, res) => {
   }
 });
 
+
+// Obtener estados de riesgo
+app.get("/estadoRiesgo", async (req, res) => {
+  try {
+
+    const estados = await pool.query(`
+      SELECT
+        idestadoriesgo,
+        descripcion
+      FROM estado_riesgo
+      ORDER BY idestadoriesgo
+    `);
+
+    res.json(estados.rows);
+
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      mensaje: "Error al obtener estados de riesgo"
+    });
+  }
+});
+
+// Actualizar estado de riesgo
+app.put("/estadoRiesgo/:id", async (req, res) => {
+
+    try {
+
+        const { id } = req.params;
+
+        const { descripcion } = req.body;
+
+        const estadoActualizado = await pool.query(
+            `
+            UPDATE estado_riesgo
+            SET descripcion = UPPER($1)
+            WHERE idestadoriesgo = $2
+            RETURNING *
+            `,
+            [
+                descripcion,
+                id
+            ]
+        );
+
+        res.status(200).json({
+            mensaje: "Estado de riesgo actualizado correctamente",
+            estadoRiesgo: estadoActualizado.rows[0]
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+            mensaje: "Error al actualizar estado de riesgo"
+        });
+
+    }
+
+});
+
+// Eliminar estado de riesgo
+app.delete("/estadoRiesgo/:id", async (req, res) => {
+
+    try {
+
+        const { id } = req.params;
+
+        const resultado = await pool.query(
+            `
+            DELETE FROM estado_riesgo
+            WHERE idestadoriesgo = $1
+            RETURNING *
+            `,
+            [id]
+        );
+
+        if (resultado.rows.length === 0) {
+
+            return res.status(404).json({
+                mensaje: "Estado de riesgo no encontrado"
+            });
+
+        }
+
+        res.status(200).json({
+            mensaje: "Estado de riesgo eliminado correctamente"
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+            mensaje: "Error al eliminar estado de riesgo"
+        });
+
+    }
+
+});
+
+// Endpoint para baja de usuario
+app.delete("/usuarios/:id", async (req, res) => {
+
+    try {
+
+        const { id } = req.params;
+
+        const resultado = await pool.query(
+            `
+            DELETE FROM usuario
+            WHERE id_empleado = $1
+            RETURNING *
+            `,
+            [id]
+        );
+
+        if (resultado.rows.length === 0) {
+
+            return res.status(404).json({
+                mensaje: "Empleado no encontrado"
+            });
+
+        }
+
+        res.status(200).json({
+            mensaje: "Se ha dado de baja al empleado"
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+            mensaje: "Error al eliminar estado de riesgo"
+        });
+
+    }
+
+});
 
 app.listen(3001, () => {
   console.log("================================");

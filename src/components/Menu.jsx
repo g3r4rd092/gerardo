@@ -1,6 +1,8 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import IconoBis from "../assets/imagenes/bis-logo.jpg";
 
+import Swal from "sweetalert2/dist/sweetalert2.js";
+import "sweetalert2/src/sweetalert2.scss";
 
 function Menu() {
     const location = useLocation();
@@ -20,16 +22,22 @@ function Menu() {
         const datos = await respuesta.json();
 
         if (datos.success) {
-            localStorage.setItem("token", datos.token);
+
+            localStorage.setItem(
+                "token",
+                datos.token
+            );
 
             localStorage.setItem(
                 "usuario",
                 JSON.stringify(datos.usuario)
             );
 
+            console.log("TOKEN GUARDADO:",
+                localStorage.getItem("token")
+            );
+
             navigate("/inicio");
-        } else {
-            alert(datos.mensaje);
         }
     };
 
@@ -37,22 +45,35 @@ function Menu() {
     const usuario = JSON.parse(localStorage.getItem("usuario"));
 
     // Cerrar sesión
-    const cerrarSesion = () => {
-        localStorage.removeItem("usuario");
-        navigate("/login");
+    const cerrarSesion = async () => {
+
+        const resultado = await Swal.fire({
+            title: "¿Cerrar sesión?",
+            text: "Finalizarás tu sesión actual",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: "Sí",
+            cancelButtonText: "Cancelar"
+        });
+
+        if (!resultado.isConfirmed) return;
+
+        localStorage.clear();
+
+        navigate("/");
     };
 
     // Determinar si una ruta está activa
     const menuActivo = (ruta) => {
-  return location.pathname.includes(ruta)
-    ? "activo"
-    : "";
-};
+        return location.pathname.includes(ruta)
+            ? "activo"
+            : "";
+    };
 
 
     return (
 
-        <main> 
+        <main>
             <aside
                 className="flex-shrink-0 p-3 bg-white aside-scroll"
                 style={{
@@ -109,16 +130,7 @@ function Menu() {
                                         to="/modifica-usuarios"
                                         className={menuActivo("/modifica-usuarios")}
                                     >
-                                        Modificar usuario
-                                    </Link>
-                                </li>
-
-                                <li>
-                                    <Link
-                                        to="/dashboard"
-                                        className={menuActivo("/dashboard")}
-                                    >
-                                        Baja usuario
+                                        Control de usuarios
                                     </Link>
                                 </li>
 
@@ -244,10 +256,19 @@ function Menu() {
 
                                 <li>
                                     <Link
-                                        to="/riesgos"
-                                        className={menuActivo("/riesgos")}
+                                        to="/registro-EstadoRiesgos"
+                                        className={menuActivo("/registro-EstadoRiesgos")}
                                     >
-                                        Crear riesgo
+                                        Estados de riesgo
+                                    </Link>
+                                </li>
+
+                                <li>
+                                    <Link
+                                        to="/alta-riesgos"
+                                        className={menuActivo("/alta-riesgos")}
+                                    >
+                                        Registrar riesgo
                                     </Link>
                                 </li>
 
@@ -256,16 +277,7 @@ function Menu() {
                                         to="/clientes/nuevo"
                                         className={menuActivo("/clientes/nuevo")}
                                     >
-                                        Modificar riesgo
-                                    </Link>
-                                </li>
-
-                                <li>
-                                    <Link
-                                        to="/clientes/nuevo"
-                                        className={menuActivo("/clientes/nuevo")}
-                                    >
-                                        Eliminar riesgo
+                                        Control de riesgos
                                     </Link>
                                 </li>
 
