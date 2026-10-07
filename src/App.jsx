@@ -9,6 +9,8 @@ import GanttDashboard from './pages/GanttDashboard';
 import AltaActividad from './pages/AltaActividad';
 import Riesgos from './pages/Riesgos';
 import AltaRiesgo from './pages/AltaRiesgo';
+import ControlImpactos from "./pages/ControlImpactos";
+import CatalogoRiesgos from "./pages/CatalogoRiesgos";
 
 function App() {
   return (
@@ -84,6 +86,24 @@ function App() {
         element={
           <ProtectedRoutes>
             <AltaRiesgo />
+          </ProtectedRoutes>
+        }
+      />
+
+      <Route
+        path="/registro-impactos"
+        element={
+          <ProtectedRoutes>
+            <ControlImpactos />
+          </ProtectedRoutes>
+        }
+      />
+
+      <Route
+        path="/catalogo-riesgos"
+        element={
+          <ProtectedRoutes>
+            <CatalogoRiesgos />
           </ProtectedRoutes>
         }
       />

@@ -1,20 +1,76 @@
 import Menu from "../components/Menu";
 import { useState } from "react";
+import { useCatalogos } from "../hooks/useCatalogos";
+import { crearRiesgo } from "../services/riesgoService";
 
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import "sweetalert2/src/sweetalert2.scss";
 
-function AltaRiesgo(){
+function AltaRiesgo() {
 
     const [form, setForm] = useState({
-        nombre: "",
-        apepat: "",
-        apemat: "",
-        correo: "",
-        password: "",
-        confirmPassword: "",
-        perfil: ""
+        descripcion: "",
+        proyecto: "",
+        impacto: "",
+        probabilidad: "",
+        riesgo: ""
     });
+
+    const { proyectos, impactos, estadoRiesgo } = useCatalogos();
+
+    const guardarRiesgo = async () => {
+
+        try {
+
+            if (
+                !form.descripcion ||
+                !form.proyecto ||
+                !form.impacto ||
+                !form.probabilidad ||
+                !form.riesgo
+            ) {
+                Swal.fire({
+                    title: "Error",
+                    text: "Todos los campos son obligatorios",
+                    icon: "error"
+                });
+                return;
+            }
+
+
+            const nvoRiesgo = {
+                descripcion: form.descripcion,
+                proyecto: form.proyecto,
+                impacto: form.impacto,
+                probabilidad: form.probabilidad,
+                riesgo: form.riesgo
+            };
+
+            const respuesta = await crearRiesgo(nvoRiesgo);
+
+            Swal.fire({
+                title: "Riesgo creado correctamente",
+                text: respuesta.mensaje,
+                icon: "success"
+            });
+
+            setForm({
+                descripcion: "",
+                proyecto: "",
+                impacto: "",
+                probabilidad: "",
+                riesgo: ""
+            });
+
+        } catch (error) {
+            Swal.fire({
+                title: "Error",
+                text: "Error al crear registro" || error.message,
+                icon: "error"
+            });
+
+        }
+    };
 
     return (
         <div className="d-flex">
@@ -29,133 +85,123 @@ function AltaRiesgo(){
                                         <div className="card-body p-md-5 text-black" style={{ marginTop: "-5%" }}>
 
                                             <h3 className="mb-5 text-uppercase">
-                                                Registro de Usuarios
+                                                Registro de riesgos
                                             </h3>
 
-                                            {/* Nombre */}
+                                            {/* Descripcion */}
                                             <div data-mdb-input-init className="form-outline form-group" id="div-form-proyecto" >
-                                                <label htmlFor="form3Example8" className="form-label">Nombre completo</label>
+                                                <label htmlFor="form3Example8" className="form-label">Descripción</label>
                                                 <input
                                                     type="text"
                                                     className="form-control form-control-lg mb-3"
                                                     id="form3Example8"
-                                                    value={form.nombre}
+                                                    value={form.descripcion}
                                                     onChange={(e) =>
                                                         setForm({
                                                             ...form,
-                                                            nombre: e.target.value
+                                                            descripcion: e.target.value
                                                         })
                                                     }
                                                 />
                                             </div>
 
-                                            {/* Apellido paterno */}
+                                            {/*Proyecto */}
                                             <div data-mdb-input-init className="form-outline form-group" id="div-form-proyecto" >
-                                                <label htmlFor="form3Example8" className="form-label">Apellido paterno</label>
-                                                <input
-                                                    type="text"
-                                                    className="form-control form-control-lg mb-3"
-                                                    id="form3Example8"
-                                                    value={form.apepat}
-                                                    onChange={(e) =>
-                                                        setForm({
-                                                            ...form,
-                                                            apepat: e.target.value
-                                                        })
-                                                    }
-                                                />
-                                            </div>
-
-                                            {/* Apellido materno */}
-                                            <div data-mdb-input-init className="form-outline form-group" id="div-form-proyecto" >
-                                                <label htmlFor="form3Example8" className="form-label">Apellido materno</label>
-                                                <input
-                                                    type="text"
-                                                    className="form-control form-control-lg mb-3"
-                                                    id="form3Example8"
-                                                    value={form.apemat}
-                                                    onChange={(e) =>
-                                                        setForm({
-                                                            ...form,
-                                                            apemat: e.target.value
-                                                        })
-                                                    }
-                                                />
-                                            </div>
-
-                                            {/* Correo */}
-                                            <div data-mdb-input-init className="form-outline form-group" id="div-form-proyecto" >
-                                                <label htmlFor="form3Example8" className="form-label">Correo electrónico</label>
-                                                <input
-                                                    type="email"
-                                                    className="form-control form-control-lg mb-3"
-                                                    id="form3Example8"
-                                                    value={form.correo}
-                                                    onChange={(e) =>
-                                                        setForm({
-                                                            ...form,
-                                                            correo: e.target.value
-                                                        })
-                                                    }
-                                                />
-                                            </div>
-
-                                            {/* Password */}
-                                            <div data-mdb-input-init className="form-outline form-group" id="div-form-proyecto" >
-                                                <label htmlFor="form3Example8" className="form-label">Contraseña</label>
-                                                <input
-                                                    type="password"
-                                                    className="form-control form-control-lg mb-3"
-                                                    id="form3Example8"
-                                                    value={form.password}
-                                                    onChange={(e) =>
-                                                        setForm({
-                                                            ...form,
-                                                            password: e.target.value
-                                                        })
-                                                    }
-                                                />
-                                            </div>
-
-                                            {/* Confirmar Password */}
-                                            <div data-mdb-input-init className="form-outline form-group" id="div-form-proyecto" >
-                                                <label htmlFor="form3Example8" className="form-label">Confirmar contraseña</label>
-                                                <input
-                                                    type="password"
-                                                    className="form-control form-control-lg mb-3"
-                                                    id="form3Example8"
-                                                    value={form.confirmPassword}
-                                                    onChange={(e) =>
-                                                        setForm({
-                                                            ...form,
-                                                            confirmPassword: e.target.value
-                                                        })
-                                                    }
-                                                />
-                                            </div>
-
-                                            {/* Perfil */}
-                                            <div data-mdb-input-init className="form-outline form-group" id="div-form-proyecto" >
-                                                <label htmlFor="form3Example8" className="form-label">Perfil</label>
+                                                <label htmlFor="form3Example8" className="form-label">Proyecto</label>
                                                 <select
                                                     className="form-select mb-3"
-                                                    value={form.perfil}
+                                                    value={form.proyecto}
                                                     onChange={(e) =>
                                                         setForm({
                                                             ...form,
-                                                            perfil: e.target.value
+                                                            proyecto: e.target.value
                                                         })
                                                     }
                                                     style={{ fontSize: "12px", padding: "0.5rem" }}
                                                 >
                                                     <option value="">
-                                                        Seleccionar perfil
+                                                        Seleccionar proyecto
                                                     </option>
 
-                                                    {perfiles.map((item) => (
+                                                    {proyectos.map((item) => (
                                                         <option
-                                                            key={item.idperfil}
-                                                            value={item.idperfil}
+                                                            key={item.id_proyecto}
+                                                            value={item.id_proyecto}
+                                                        >
+                                                            {item.nombre}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                            </div>
+
+                                            {/*Impacto */}
+                                            <div data-mdb-input-init className="form-outline form-group" id="div-form-proyecto" >
+                                                <label htmlFor="form3Example8" className="form-label">Impacto</label>
+                                                <select
+                                                    className="form-select mb-3"
+                                                    value={form.impacto}
+                                                    onChange={(e) =>
+                                                        setForm({
+                                                            ...form,
+                                                            impacto: e.target.value
+                                                        })
+                                                    }
+                                                    style={{ fontSize: "12px", padding: "0.5rem" }}
+                                                >
+                                                    <option value="">
+                                                        Seleccione una opción
+                                                    </option>
+
+                                                    {impactos.map((item) => (
+                                                        <option
+                                                            key={item.id}
+                                                            value={item.id}
+                                                        >
+                                                            {item.descripcion}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                            </div>
+
+                                            {/* Probabilidad */}
+                                            <div data-mdb-input-init className="form-outline form-group" id="div-form-proyecto" >
+                                                <label htmlFor="form3Example8" className="form-label">Probabilidad</label>
+                                                <input
+                                                    type="text"
+                                                    className="form-control form-control-lg mb-3"
+                                                    id="form3Example8"
+                                                    value={form.probabilidad}
+                                                    onChange={(e) =>
+                                                        setForm({
+                                                            ...form,
+                                                            probabilidad: e.target.value
+                                                        })
+                                                    }
+                                                />
+                                            </div>
+
+                                            {/*Estado de riesgo */}
+                                            <div data-mdb-input-init className="form-outline form-group" id="div-form-proyecto" >
+                                                <label htmlFor="form3Example8" className="form-label">Riesgo</label>
+                                                <select
+                                                    className="form-select mb-3"
+                                                    value={form.riesgo}
+                                                    onChange={(e) =>
+                                                        setForm({
+                                                            ...form,
+                                                            riesgo: e.target.value
+                                                        })
+                                                    }
+                                                    style={{ fontSize: "12px", padding: "0.5rem" }}
+                                                >
+                                                    <option value="">
+                                                        Seleccione una opción
+                                                    </option>
+
+                                                    {estadoRiesgo.map((item) => (
+                                                        <option
+                                                            key={item.idestadoriesgo}
+                                                            value={item.idestadoriesgo}
                                                         >
                                                             {item.descripcion}
                                                         </option>
@@ -167,8 +213,8 @@ function AltaRiesgo(){
                                                 <input
                                                     className="btn btn-bis"
                                                     type="button"
-                                                    value="Registrar usuario"
-                                                    onClick={guardarUsuario}
+                                                    value="Guardar"
+                                                    onClick={guardarRiesgo}
                                                 />
                                             </div>
                                         </div>

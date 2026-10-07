@@ -122,6 +122,44 @@ app.get("/clientes", async (req, res) => {
   }
 });
 
+//Obtener los proyectos del catálogo de BD
+app.get("/projects", async (req, res) => {
+  try {
+    const resultado = await pool.query(`
+      SELECT id_proyecto, nombre
+      FROM proyecto
+      ORDER BY nombre
+    `);
+
+    res.json(resultado.rows);
+  } catch (error) {
+    console.error("Error al obtener proyectos:", error);
+    res.status(500).json({
+      success: false,
+      mensaje: "Error al mostrar proyectos"
+    });
+  }
+});
+
+//Obtener los impactos del catálogo de BD
+app.get("/impacts", async (req, res) => {
+  try {
+    const resultado = await pool.query(`
+      SELECT id, descripcion
+      FROM impacto
+      ORDER BY descripcion
+    `);
+
+    res.json(resultado.rows);
+  } catch (error) {
+    console.error("Error al obtener impactos:", error);
+    res.status(500).json({
+      success: false,
+      mensaje: "Error al mostrar impactos"
+    });
+  }
+});
+
 //Obtener clientes del catálogo de BD
 app.get("/perfiles", async (req, res) => {
   try {
@@ -192,9 +230,6 @@ app.post("/usuarios", async (req, res) => {
 
     const passwordHash = await bcrypt.hash(password, 10);
 
-    console.log("PASSWORD ORIGINAL:", password);
-    console.log("PASSWORD HASH:", passwordHash);
-
     const nuevoUsuario = await pool.query(
       `INSERT INTO usuario
             (
@@ -239,7 +274,7 @@ app.post("/estadoRiesgo", async (req, res) => {
       descripcion
     } = req.body;
 
-    
+
 
     const nuevoEstadoRiesgo = await pool.query(
       `INSERT INTO estado_riesgo
@@ -263,6 +298,91 @@ app.post("/estadoRiesgo", async (req, res) => {
     console.error(error);
     res.status(500).json({
       mensaje: "Error al registrar estado de riesgo"
+    });
+  }
+});
+
+
+//Enpoint para registrar impactos
+app.post("/impactos", async (req, res) => {
+  try {
+
+    const {
+      descripcion
+    } = req.body;
+
+
+
+    const nuevoImpacto = await pool.query(
+      `INSERT INTO impacto
+            (
+                descripcion
+            )
+            VALUES (
+            UPPER($1))
+            RETURNING *`,
+      [
+        descripcion
+      ]
+    );
+
+    res.status(201).json({
+      mensaje: "Impacto agregado correctamente",
+      usuario: nuevoImpacto.rows[0]
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      mensaje: "Error al registrar impacto"
+    });
+  }
+});
+
+//Enpoint para crear nuevos riesgos
+app.post("/riesgos", async (req, res) => {
+  try {
+
+    const {
+      descripcion,
+      proyecto,
+      impacto,
+      probabilidad,
+      riesgo
+    } = req.body;
+
+    const porcentaje = parseFloat(probabilidad);
+
+    const nuevoRiesgo = await pool.query(
+      `INSERT INTO riesgo
+            (
+                descripcion,
+                idproyecto,
+                impacto,
+                probabilidad,
+                estado
+            )
+            VALUES (
+            UPPER($1),$2,$3,$4,$5)
+            RETURNING *`,
+      [
+        descripcion,
+        proyecto,
+        impacto,
+        porcentaje,
+        riesgo
+      ]
+    );
+
+    res.status(201).json({
+      mensaje: "Se ha creado el riesgo correctamente",
+      usuario: nuevoRiesgo.rows[0]
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      mensaje: "Error al registrar nuevo riesgo"
     });
   }
 });
@@ -377,6 +497,40 @@ app.get("/estados-proyectos", async (req, res) => {
   }
 });
 
+
+//Obtener los riesgos registrados en el catálogo de BD
+app.get("/riesgos", async (req, res) => {
+  try {
+    const resultado = await pool.query(`
+      SELECT
+      r.idriesgo,
+      r.descripcion,
+      r.idproyecto,
+      r.impacto AS idimpacto,
+      r.estado AS idestadoriesgo,
+      p.nombre AS proyecto,
+      i.descripcion AS impacto,
+      er.descripcion AS riesgo,
+      r.probabilidad
+      FROM riesgo r
+      JOIN proyecto p
+      ON r.idproyecto = p.id_proyecto
+      JOIN impacto i
+      ON r.impacto = i.id
+      JOIN estado_riesgo er
+      ON r.estado = er.idestadoriesgo
+    `);
+
+    res.json(resultado.rows);
+  } catch (error) {
+    console.error("Error al obtener catálogo de riesgos:", error);
+    res.status(500).json({
+      success: false,
+      mensaje: "Error al obtener catálogo de riesgos"
+    });
+  }
+});
+
 //Endpoint para buscar un proyecto o id
 app.get("/proyecto/:id", async (req, res) => {
 
@@ -461,31 +615,148 @@ app.get("/estadoRiesgo", async (req, res) => {
   }
 });
 
+// Obtener estados de riesgo
+app.get("/impactos", async (req, res) => {
+  try {
+
+    const impactos = await pool.query(`
+      SELECT
+        id,
+        descripcion
+      FROM impacto
+      ORDER BY id
+    `);
+
+    res.json(impactos.rows);
+
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      mensaje: "Error al obtener estados de riesgo"
+    });
+  }
+});
+
 // Actualizar estado de riesgo
 app.put("/estadoRiesgo/:id", async (req, res) => {
 
-    try {
+  try {
 
-        const { id } = req.params;
+    const { id } = req.params;
 
-        const { descripcion } = req.body;
+    const { descripcion } = req.body;
 
-        const estadoActualizado = await pool.query(
-            `
+    const estadoActualizado = await pool.query(
+      `
             UPDATE estado_riesgo
             SET descripcion = UPPER($1)
             WHERE idestadoriesgo = $2
             RETURNING *
             `,
+      [
+        descripcion,
+        id
+      ]
+    );
+
+    res.status(200).json({
+      mensaje: "Estado de riesgo actualizado correctamente",
+      estadoRiesgo: estadoActualizado.rows[0]
+    });
+
+  } catch (error) {
+
+    console.error(error);
+
+    res.status(500).json({
+      mensaje: "Error al actualizar estado de riesgo"
+    });
+
+  }
+
+});
+
+
+// Actualizar estado de riesgo
+app.put("/impactos/:id", async (req, res) => {
+
+  try {
+
+    const { id } = req.params;
+
+    const { descripcion } = req.body;
+
+    const impactoActualizado = await pool.query(
+      `
+            UPDATE impacto
+            SET descripcion = UPPER($1)
+            WHERE id = $2
+            RETURNING *
+            `,
+      [
+        descripcion,
+        id
+      ]
+    );
+
+    res.status(200).json({
+      mensaje: "Se ha modificado la descripción de impacto correctamente",
+      impacto: impactoActualizado.rows[0]
+    });
+
+  } catch (error) {
+
+    console.error(error);
+
+    res.status(500).json({
+      mensaje: "Error al modificar descripción de impacto"
+    });
+
+  }
+
+});
+
+//Endpoint para modificar riesgo en el catálogo
+app.put("/riesgos/:id", async (req, res) => {
+
+    try {
+
+        const { id } = req.params;
+
+        const {
+            descripcion,
+            idproyecto,
+            idimpacto,
+            probabilidad,
+            idestadoriesgo
+        } = req.body;
+
+        const resultado = await pool.query(
+            `
+            UPDATE riesgo
+            SET
+                descripcion = UPPER($1),
+                idproyecto = $2,
+                impacto = $3,
+                probabilidad = $4,
+                estado = $5
+            WHERE idriesgo = $6
+            RETURNING *
+            `,
             [
                 descripcion,
+                idproyecto,
+                idimpacto,
+                probabilidad,
+                idestadoriesgo,
                 id
             ]
         );
 
         res.status(200).json({
-            mensaje: "Estado de riesgo actualizado correctamente",
-            estadoRiesgo: estadoActualizado.rows[0]
+            mensaje: "Riesgo actualizado correctamente",
+            riesgo: resultado.rows[0]
         });
 
     } catch (error) {
@@ -493,7 +764,7 @@ app.put("/estadoRiesgo/:id", async (req, res) => {
         console.error(error);
 
         res.status(500).json({
-            mensaje: "Error al actualizar estado de riesgo"
+            mensaje: "Error al actualizar riesgo"
         });
 
     }
@@ -503,80 +774,120 @@ app.put("/estadoRiesgo/:id", async (req, res) => {
 // Eliminar estado de riesgo
 app.delete("/estadoRiesgo/:id", async (req, res) => {
 
-    try {
+  try {
 
-        const { id } = req.params;
+    const { id } = req.params;
 
-        const resultado = await pool.query(
-            `
+    const resultado = await pool.query(
+      `
             DELETE FROM estado_riesgo
             WHERE idestadoriesgo = $1
             RETURNING *
             `,
-            [id]
-        );
+      [id]
+    );
 
-        if (resultado.rows.length === 0) {
+    if (resultado.rows.length === 0) {
 
-            return res.status(404).json({
-                mensaje: "Estado de riesgo no encontrado"
-            });
-
-        }
-
-        res.status(200).json({
-            mensaje: "Estado de riesgo eliminado correctamente"
-        });
-
-    } catch (error) {
-
-        console.error(error);
-
-        res.status(500).json({
-            mensaje: "Error al eliminar estado de riesgo"
-        });
+      return res.status(404).json({
+        mensaje: "Estado de riesgo no encontrado"
+      });
 
     }
+
+    res.status(200).json({
+      mensaje: "Estado de riesgo eliminado correctamente"
+    });
+
+  } catch (error) {
+
+    console.error(error);
+
+    res.status(500).json({
+      mensaje: "Error al eliminar estado de riesgo"
+    });
+
+  }
+
+});
+
+// Eliminar estado de riesgo
+app.delete("/impactos/:id", async (req, res) => {
+
+  try {
+
+    const { id } = req.params;
+
+    const resultado = await pool.query(
+      `
+            DELETE FROM impacto
+            WHERE id = $1
+            RETURNING *
+            `,
+      [id]
+    );
+
+    if (resultado.rows.length === 0) {
+
+      return res.status(404).json({
+        mensaje: "Impacto no encontrado"
+      });
+
+    }
+
+    res.status(200).json({
+      mensaje: "El impacto se ha eliminado del sistema"
+    });
+
+  } catch (error) {
+
+    console.error(error);
+
+    res.status(500).json({
+      mensaje: "Error al eliminar impacto"
+    });
+
+  }
 
 });
 
 // Endpoint para baja de usuario
 app.delete("/usuarios/:id", async (req, res) => {
 
-    try {
+  try {
 
-        const { id } = req.params;
+    const { id } = req.params;
 
-        const resultado = await pool.query(
-            `
+    const resultado = await pool.query(
+      `
             DELETE FROM usuario
             WHERE id_empleado = $1
             RETURNING *
             `,
-            [id]
-        );
+      [id]
+    );
 
-        if (resultado.rows.length === 0) {
+    if (resultado.rows.length === 0) {
 
-            return res.status(404).json({
-                mensaje: "Empleado no encontrado"
-            });
-
-        }
-
-        res.status(200).json({
-            mensaje: "Se ha dado de baja al empleado"
-        });
-
-    } catch (error) {
-
-        console.error(error);
-
-        res.status(500).json({
-            mensaje: "Error al eliminar estado de riesgo"
-        });
+      return res.status(404).json({
+        mensaje: "Empleado no encontrado"
+      });
 
     }
+
+    res.status(200).json({
+      mensaje: "Se ha dado de baja al empleado"
+    });
+
+  } catch (error) {
+
+    console.error(error);
+
+    res.status(500).json({
+      mensaje: "Error al eliminar estado de riesgo"
+    });
+
+  }
 
 });
 

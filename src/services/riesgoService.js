@@ -90,3 +90,70 @@ export const eliminarRiesgo = async (id) => {
 
     return data;
 };
+
+
+// RIESGOS //
+
+export const crearRiesgo = async (nvoRiesgo) => {
+
+    const response = await fetch(`${API_URL}/riesgos`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(nvoRiesgo)
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(data.error || "Error al crear nuevo riesgo");
+    }
+
+    return data;
+};
+
+export const obtenerCatalogoRiesgos = async () => {
+
+    const response = await fetch(
+        `${API_URL}/riesgos`
+    );
+
+    if (!response.ok) {
+        throw new Error(
+            "Error al obtener catalogo de riesgos"
+        );
+    }
+
+    return await response.json();
+};
+
+export const actualizarCatalogoRiesgo = async (
+    id,
+    riesgo
+) => {
+
+    const response = await fetch(
+        `${API_URL}/riesgos/${id}`,
+        {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(riesgo)
+        }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+
+        throw new Error(
+            data.mensaje ||
+            "Error al actualizar riesgo"
+        );
+
+    }
+
+    return data;
+};

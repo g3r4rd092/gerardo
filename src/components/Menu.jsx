@@ -274,8 +274,8 @@ function Menu() {
 
                                 <li>
                                     <Link
-                                        to="/clientes/nuevo"
-                                        className={menuActivo("/clientes/nuevo")}
+                                        to="/catalogo-riesgos"
+                                        className={menuActivo("/catalogo-riesgos")}
                                     >
                                         Control de riesgos
                                     </Link>
@@ -308,6 +308,36 @@ function Menu() {
                                         className={menuActivo("/clientes")}
                                     >
                                         Crear incidencia
+                                    </Link>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </li>
+
+                    {/* IMPACTOS */}
+                    <li className="mb-1">
+                        <button
+                            className="btn btn-toggle align-items-center rounded collapsed"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#impactos-collapse"
+                            aria-expanded="false"
+                        >
+                            Impactos
+                        </button>
+
+                        <div
+                            className="collapse"
+                            id="impactos-collapse"
+                        >
+                            <ul className="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+
+                                <li>
+                                    <Link
+                                        to="/registro-impactos"
+                                        className={menuActivo("/registro-impactos")}
+                                    >
+                                        Control de registros
                                     </Link>
                                 </li>
 
