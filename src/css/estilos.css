@@ -109,3 +109,31 @@
     height: stretch;
     justify-content: center;
 }
+
+.collapse {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-in-out;
+}
+
+.collapse.show {
+    max-height: 500px;
+}
+
+#span-nota{
+    font-style: italic;
+    color: #005f9f;
+    font-weight: bold;
+}
+
+.react-datepicker-wrapper {
+    width: 100%;
+}
+
+.react-datepicker__input-container {
+    width: 100%;
+}
+
+.react-datepicker__input-container input {
+    width: 100%;
+}

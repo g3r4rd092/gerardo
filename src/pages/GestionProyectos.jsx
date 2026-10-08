@@ -2,26 +2,26 @@ import Menu from "../components/Menu";
 import "../css/estilos.css";
 import { useEffect, useState } from "react";
 import * as bootstrap from 'bootstrap';
-import { obtenerCatalogoRiesgos, actualizarCatalogoRiesgo, eliminarRiesgoCatalogo } from "../services/riesgoService";
+import { obtenerCatalogoProyectos, actualizarCatalogoProyectos, eliminarProyectoCatalogo } from "../services/proyectoService";
 
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import "sweetalert2/src/sweetalert2.scss";
-import ModalEditCatalogRiesgos from "../components/modalEditCatalogRiesgos";
+import ModalEditProyecto from "../components/modalEditProyecto";
 
-function CatalogoRiesgos() {
+function GestionProyectos() {
 
-    const [riesgos, setRiesgos] = useState([]);
-    const [riesgoSeleccionado, setRiesgoSeleccionado] = useState(null);
+    const [proyectos, setProyectos] = useState([]);
+    const [proyectoSeleccionado, setProyectoSeleccionado] = useState(null);
 
-    const cargarCatalogoRiesgo = async () => {
+    const cargarCatalogoProyecto = async () => {
 
         try {
 
             const data =
-                await obtenerCatalogoRiesgos();
+                await obtenerCatalogoProyectos();
             console.log(data);
 
-            setRiesgos(data);
+            setProyectos(data);
 
         } catch (error) {
 
@@ -31,21 +31,19 @@ function CatalogoRiesgos() {
     };
 
     useEffect(() => {
-
-        cargarCatalogoRiesgo();
-
+        cargarCatalogoProyecto();
     }, []);
 
     const guardarCambios = async (
-        riesgoActualizado
+        proyectoActualizado
     ) => {
 
         try {
 
             const respuesta =
-                await actualizarCatalogoRiesgo(
-                    riesgoActualizado.idriesgo,
-                    riesgoActualizado
+                await actualizarCatalogoProyectos(
+                    proyectoActualizado.id_proyecto,
+                    proyectoActualizado
                 );
 
             const modalElement =
@@ -78,7 +76,7 @@ function CatalogoRiesgos() {
                 "padding-right"
             );
 
-            await cargarCatalogoRiesgo();
+            await cargarCatalogoProyecto();
 
             Swal.fire({
                 icon: "success",
@@ -99,69 +97,43 @@ function CatalogoRiesgos() {
 
     };
 
-    const eliminarRiesgoCat = async (id) => {
-
+    const eliminarProyectoCat = async (id) => {
         try {
-
             const resultado = await Swal.fire({
-
                 title: "¿Eliminar registro?",
-
                 text: "Esta acción no se puede deshacer",
-
                 icon: "warning",
-
                 showCancelButton: true,
-
                 confirmButtonColor: "#d33",
-
                 cancelButtonColor: "#6c757d",
-
                 confirmButtonText: "Sí, eliminar",
-
                 cancelButtonText: "Cancelar"
-
             });
 
             if (!resultado.isConfirmed) {
-
                 return;
-
             }
 
             const respuesta =
-                await eliminarRiesgoCatalogo(id);
+                await eliminarProyectoCatalogo(id);
 
-            await cargarCatalogoRiesgo();
+            await cargarCatalogoProyecto();
 
             Swal.fire({
-
                 title: "Eliminado",
-
                 text: respuesta.mensaje,
-
                 icon: "success",
-
                 timer: 1500,
-
                 showConfirmButton: false
-
             });
-
         } catch (error) {
-
+            console.error(error);
             Swal.fire({
-
                 title: "Error",
-
                 text: error.message,
-
                 icon: "error"
-
             });
-
         }
-
     };
 
 
@@ -178,44 +150,52 @@ function CatalogoRiesgos() {
                                         <div className="card-body p-md-5 text-black" style={{ marginTop: "-5%" }}>
 
                                             <h3 className="mb-5 text-uppercase">
-                                                Catálogo de riesgos
+                                                Catálogo de proyectos
                                             </h3>
                                             <table className="table" id="tabla-actividades">
                                                 <thead>
                                                     <tr>
                                                         <th scope="col">#</th>
-                                                        <th scope="col">Descripción del riesgo</th>
-                                                        <th scope="col">Proyecto correspondiente</th>
-                                                        <th scope="col">Impacto</th>
-                                                        <th scope="col">Probabilidad</th>
-                                                        <th scope="col">Riesgo</th>
+                                                        <th scope="col">Descripción de proyecto</th>
+                                                        <th scope="col">Cliente</th>
+                                                        <th scope="col">Fecha inicio</th>
+                                                        <th scope="col">Fecha término</th>
+                                                        <th scope="col">Estatus</th>
+                                                        <th scope="col">Porcentaje</th>
+                                                        <th scope="col">Prioridad</th>
                                                         <th scope="col">Acciones</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
 
-                                                    {riesgos.map((item) => (
+                                                    {proyectos.map((item) => (
 
-                                                        <tr key={item.idriesgo}>
+                                                        <tr key={item.id_proyecto}>
 
                                                             <th>
-                                                                {item.idriesgo}
+                                                                {item.id_proyecto}
                                                             </th>
 
                                                             <td>
-                                                                {item.descripcion}
+                                                                {item.nombre}
                                                             </td>
                                                             <td>
-                                                                {item.proyecto}
+                                                                {item.cliente}
                                                             </td>
                                                             <td>
-                                                                {item.impacto}
+                                                                {item.fecha_inicio}
                                                             </td>
                                                             <td>
-                                                                {item.probabilidad}
+                                                                {item.fecha_fin}
                                                             </td>
                                                             <td>
-                                                                {item.riesgo}
+                                                                {item.estado_proyecto}
+                                                            </td>
+                                                            <td>
+                                                                {item.porcentaje}
+                                                            </td>
+                                                            <td>
+                                                                {item.prioridad}
                                                             </td>
                                                             <td>
                                                                 <button
@@ -224,8 +204,8 @@ function CatalogoRiesgos() {
                                                                     data-bs-target="#modalEditar"
                                                                     onClick={() => {
                                                                         console.log(item);
-                                                                        setRiesgoSeleccionado(item);
-                                                                        console.log(riesgoSeleccionado);
+                                                                        setProyectoSeleccionado(item);
+                                                                        //console.log(riesgoSeleccionado);
                                                                     }}
                                                                 >
                                                                     <i className="bi bi-pencil-square"></i>
@@ -233,8 +213,8 @@ function CatalogoRiesgos() {
                                                                 <button
                                                                     className="btn btn-danger btn-sm ms-2"
                                                                     onClick={() =>
-                                                                        eliminarRiesgoCat(
-                                                                            item.idriesgo
+                                                                        eliminarProyectoCat(
+                                                                            item.id_proyecto
                                                                         )
                                                                     }
                                                                 >
@@ -253,12 +233,12 @@ function CatalogoRiesgos() {
                     </div>
                 </main>
             </div>
-            <ModalEditCatalogRiesgos
-                riesgo={riesgoSeleccionado}
+            <ModalEditProyecto
+                proyecto={proyectoSeleccionado}
                 onGuardar={guardarCambios}
             />
         </div >
     );
 
 }
-export default CatalogoRiesgos; 
+export default GestionProyectos; 

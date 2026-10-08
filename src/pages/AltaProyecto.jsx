@@ -1,14 +1,68 @@
 import Menu from "../components/Menu";
 import { useCatalogos } from "../hooks/useCatalogos";
+import { registrarProyecto } from "../services/proyectoService";
 import { useState } from "react";
 import "../css/estilos.css";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+
+import Swal from "sweetalert2/dist/sweetalert2.js";
+import "sweetalert2/src/sweetalert2.scss";
 
 function AltaProyecto() {
 
     const { clientes, prioridades, consecutivo } = useCatalogos();
 
-    const [cliente, setCliente] = useState("");
-    const [prioridad, setPrioridad] = useState("");
+    const [fecha_inicio, setFechaInicio] = useState(new Date());
+    const [fecha_fin, setFechaTermino] = useState(new Date());
+
+    const fechaActual = new Date().toISOString().split("T")[0];
+
+    const [form, setForm] = useState({
+        nombre: "",
+        id_cliente: "",
+        fecha_inicio: fechaActual,
+        fecha_fin: fechaActual,
+        prioridad: ""
+    });
+    
+
+    const guardarProyecto = async () => {
+
+        try {
+
+            const respuesta =
+                await registrarProyecto(form);
+
+            Swal.fire({
+                title: "Creación de proyecto",
+                text: respuesta.mensaje,
+                icon: "success",
+                timer: 1500,
+                showConfirmButton: false
+            });
+
+            setForm({
+                nombre: "",
+                id_cliente: "",
+                fecha_inicio: fechaActual,
+                fecha_fin: fechaActual,
+                prioridad: ""
+            });
+
+            setFechaInicio(new Date());
+            setFechaTermino(new Date());
+
+
+        } catch (error) {
+
+            Swal.fire({
+                title: "Error",
+                text: error.message,
+                icon: "error"
+            });
+        }
+    };
 
     return (
 
@@ -39,17 +93,30 @@ function AltaProyecto() {
 
                                             <div data-mdb-input-init className="form-outline mb-4 form-group" id="div-form-proyecto">
                                                 <label htmlFor="form3Example8" className="form-label">Nombre o descripción del proyecto</label>
-                                                <input type="text" id="form3Example8" className="form-control form-control-lg" />
+                                                <input type="text" id="form3Example8" className="form-control form-control-lg" value={form.nombre}
+                                                    onChange={(e) =>
+                                                        setForm({
+                                                            ...form,
+                                                            nombre: e.target.value
+                                                        })
+                                                    } />
                                             </div>
 
                                             <div data-mdb-input-init className="form-outline mb-4 form-group" id="div-form-proyecto">
                                                 <label htmlFor="form3Example8" className="form-label">Cliente</label>
-                                                <select className="form-select" aria-label="Default select example" value={cliente} onChange={(e) => setCliente(e.target.value)}>
-                                                    <option selected>Seleccionar cliente</option>
+                                                <select className="form-select" aria-label="Default select example" value={form.id_cliente}
+                                                    onChange={(e) =>
+                                                        setForm({
+                                                            ...form,
+                                                            id_cliente: Number(e.target.value)
+                                                        })
+                                                    }
+                                                    style={{ fontSize: "12px" }}>
+                                                    <option>Seleccionar cliente</option>
                                                     {clientes.map((item) => (
                                                         <option
                                                             key={item.idcliente}
-                                                            value={item.nombre}
+                                                            value={item.idcliente}
                                                         >
                                                             {item.nombre}
                                                         </option>
@@ -59,30 +126,72 @@ function AltaProyecto() {
 
                                             <div data-mdb-input-init className="form-outline mb-4 form-group" id="div-form-proyecto">
                                                 <label htmlFor="form3Example8" className="form-label">Fecha de inicio</label>
-                                                <input type="date" id="form3Example8" className="form-control form-control-lg" />
+                                                <DatePicker
+                                                    selected={fecha_inicio}
+                                                    value={fecha_inicio}
+                                                    onChange={(date) => {
+                                                        setFechaInicio(date);
+                                                        setForm({
+                                                            ...form,
+                                                            fecha_inicio: date.toISOString().split("T")[0]
+                                                        });
+                                                    }}
+                                                    dateFormat="yyyy-MM-dd"
+                                                    className="form-control form-control-lg mb-3"
+                                                    id="fechaInicio"
+                                                    minDate={new Date()}
+
+                                                />
                                             </div>
 
                                             <div data-mdb-input-init className="form-outline mb-4 form-group" id="div-form-proyecto">
                                                 <label htmlFor="form3Example8" className="form-label">Fecha de término</label>
-                                                <input type="date" id="form3Example8" className="form-control form-control-lg" />
+                                                <DatePicker
+                                                    selected={fecha_fin}
+                                                    value={fecha_fin}
+                                                    onChange={(date) => {
+                                                        setFechaTermino(date);
+                                                        setForm({
+                                                            ...form,
+                                                            fecha_fin: date.toISOString().split("T")[0]
+                                                        });
+                                                    }}
+                                                    dateFormat="yyyy-MM-dd"
+                                                    className="form-control form-control-lg mb-3"
+                                                    id="fechaTermino"
+                                                    minDate={fecha_inicio}
+
+                                                />
                                             </div>
 
                                             <div data-mdb-input-init className="form-outline mb-4 form-group" id="div-form-proyecto">
                                                 <label htmlFor="form3Example8" className="form-label">Prioridad</label>
-                                                <select className="form-select" aria-label="Default select example" value={prioridad} onChange={(e) => setPrioridad(e.target.value)}>
-                                                    <option selected>Seleccionar prioridad</option>
+                                                <select className="form-select" aria-label="Default select example" value={form.prioridad} onChange={(e) =>
+                                                    setForm({
+                                                        ...form,
+                                                        prioridad: Number(e.target.value)
+                                                    })
+                                                }
+                                                    style={{ fontSize: "12px" }}>
+                                                    <option>Seleccionar prioridad</option>
                                                     {prioridades.map((item) => (
                                                         <option
                                                             key={item.idprioridad}
-                                                            value={item.descripcion}
+                                                            value={item.idprioridad}
                                                         >
                                                             {item.descripcion}
                                                         </option>
                                                     ))}
                                                 </select>
                                             </div>
+                                            <span id="span-nota">Nota: Se asignará estatus por defecto "En progreso" y porcentaje inicial 0%</span>
                                             <div className="d-flex justify-content-end pt-3">
-                                                <input className="btn btn-bis" type="submit" value="Registrar proyecto" />
+                                                <input
+                                                    className="btn btn-bis"
+                                                    type="button"
+                                                    value="Registrar proyecto"
+                                                    onClick={guardarProyecto}
+                                                />
                                             </div>
 
                                         </div>

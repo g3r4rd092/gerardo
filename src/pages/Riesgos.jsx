@@ -1,4 +1,5 @@
 import Menu from "../components/Menu";
+import * as bootstrap from 'bootstrap';
 import ModalEditarRiesgo from "../components/modalEditRiesgo";
 import { registrarRiesgo, obtenerEstadosRiesgo, actualizarRiesgo, eliminarRiesgo } from "../services/riesgoService";
 import "../css/estilos.css";
@@ -97,13 +98,41 @@ function Riesgos() {
                 riesgoActualizado
             );
 
-            await cargarEstadosRiesgo();
+            const modalElement =
+                document.getElementById(
+                    "modalEditar"
+                );
 
-            setMostrarModal(false);
+            const modal =
+                bootstrap.Modal.getOrCreateInstance(
+                    modalElement
+                );
+
+            modal.hide();
+
+            modal.dispose();
+
+            document
+                .querySelectorAll(
+                    ".modal-backdrop"
+                )
+                .forEach(
+                    element => element.remove()
+                );
+
+            document.body.classList.remove(
+                "modal-open"
+            );
+
+            document.body.style.removeProperty(
+                "padding-right"
+            );
+
+            await cargarEstadosRiesgo();
 
             Swal.fire({
                 icon: "success",
-                title: "Actualizado correctamente",
+                title: "Estado de riesgo actualizado",
                 timer: 1500,
                 showConfirmButton: false
             });
@@ -154,6 +183,26 @@ function Riesgos() {
                 await eliminarRiesgo(id);
 
             await cargarEstadosRiesgo();
+
+            //Cerrar el modal al mostrar alerta sweetalert
+            const modalElement =
+                document.getElementById("modalEditar");
+
+            const modal =
+                bootstrap.Modal.getInstance(modalElement);
+
+            if (modal) {
+                modal.hide();
+            }
+
+            // Eliminar backdrop sobrante
+            document
+                .querySelectorAll('.modal-backdrop')
+                .forEach(el => el.remove());
+
+            // Restaurar el body
+            document.body.classList.remove('modal-open');
+            document.body.style.removeProperty('padding-right');
 
             Swal.fire({
 
@@ -206,7 +255,7 @@ function Riesgos() {
 
                                                 {/* Descripción */}
                                                 <div data-mdb-input-init className="form-outline form-group" id="div-form-proyecto" >
-                                                    <label htmlFor="form3Example8" className="form-label">Nombre actividad</label>
+                                                    <label htmlFor="form3Example8" className="form-label">Descripción</label>
                                                     <input
                                                         type="text"
                                                         className="form-control form-control-lg mb-3"

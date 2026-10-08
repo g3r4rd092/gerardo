@@ -266,6 +266,54 @@ app.post("/usuarios", async (req, res) => {
   }
 });
 
+//Enpoint para registrar proyecto
+app.post("/altaProyectos", async (req, res) => {
+  try {
+
+
+    const {
+      nombre,
+      id_cliente,
+      fecha_inicio,
+      fecha_fin,
+      prioridad
+    } = req.body;
+
+
+    const nuevoProyecto = await pool.query(
+      `INSERT INTO proyecto
+            (
+                nombre,
+                id_cliente,
+                fecha_inicio,
+                fecha_fin,                
+                prioridad
+            )
+            VALUES (
+            UPPER($1),$2,$3,$4,$5)
+            RETURNING *`,
+      [
+        nombre,
+        id_cliente,
+        fecha_inicio,
+        fecha_fin,
+        prioridad
+      ]
+    );
+
+    res.status(201).json({
+      mensaje: "Proyecto creado correctamemte",
+      usuario: nuevoProyecto.rows[0]
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      mensaje: "Error al crear proyecto"
+    });
+  }
+});
+
 //Enpoint para registrar estados de riesgo
 app.post("/estadoRiesgo", async (req, res) => {
   try {
@@ -531,6 +579,49 @@ app.get("/riesgos", async (req, res) => {
   }
 });
 
+//Obtener los proyectos registrados en el catálogo de BD
+app.get("/altaProyectos", async (req, res) => {
+  try {
+    const resultado = await pool.query(`
+      SELECT p.id_proyecto,
+      p.nombre,
+      p.id_cliente,
+     TO_CHAR(
+        p.fecha_inicio,
+        'YYYY-MM-DD'
+    ) AS fecha_inicio,
+
+    TO_CHAR(
+        p.fecha_fin,
+        'YYYY-MM-DD'
+    ) AS fecha_fin,
+      p.id_estatus,
+      p.porcentaje,
+      p.prioridad as idprioridad,
+      c.nombre as cliente,
+      ep.descripcion as estado_proyecto,
+      pr.descripcion as prioridad
+      FROM proyecto p
+      JOIN cliente c
+      ON p.id_cliente = c.idcliente
+      JOIN estado_proyecto ep
+      ON p.id_estatus = ep.idproyecto
+      JOIN prioridad pr
+      ON p.prioridad = pr.idprioridad
+      ORDER BY p.id_proyecto
+    `);
+
+    res.json(resultado.rows);
+  } catch (error) {
+    console.error("Error al obtener catálogo de proyectos:", error);
+    res.status(500).json({
+      success: false,
+      mensaje: "Error al obtener catálogo de proyectos"
+    });
+  }
+});
+
+
 //Endpoint para buscar un proyecto o id
 app.get("/proyecto/:id", async (req, res) => {
 
@@ -720,20 +811,20 @@ app.put("/impactos/:id", async (req, res) => {
 //Endpoint para modificar riesgo en el catálogo
 app.put("/riesgos/:id", async (req, res) => {
 
-    try {
+  try {
 
-        const { id } = req.params;
+    const { id } = req.params;
 
-        const {
-            descripcion,
-            idproyecto,
-            idimpacto,
-            probabilidad,
-            idestadoriesgo
-        } = req.body;
+    const {
+      descripcion,
+      idproyecto,
+      idimpacto,
+      probabilidad,
+      idestadoriesgo
+    } = req.body;
 
-        const resultado = await pool.query(
-            `
+    const resultado = await pool.query(
+      `
             UPDATE riesgo
             SET
                 descripcion = UPPER($1),
@@ -744,30 +835,84 @@ app.put("/riesgos/:id", async (req, res) => {
             WHERE idriesgo = $6
             RETURNING *
             `,
-            [
-                descripcion,
-                idproyecto,
-                idimpacto,
-                probabilidad,
-                idestadoriesgo,
-                id
-            ]
-        );
+      [
+        descripcion,
+        idproyecto,
+        idimpacto,
+        probabilidad,
+        idestadoriesgo,
+        id
+      ]
+    );
 
-        res.status(200).json({
-            mensaje: "Riesgo actualizado correctamente",
-            riesgo: resultado.rows[0]
-        });
+    res.status(200).json({
+      mensaje: "Riesgo actualizado correctamente",
+      riesgo: resultado.rows[0]
+    });
 
-    } catch (error) {
+  } catch (error) {
 
-        console.error(error);
+    console.error(error);
 
-        res.status(500).json({
-            mensaje: "Error al actualizar riesgo"
-        });
+    res.status(500).json({
+      mensaje: "Error al actualizar riesgo"
+    });
 
-    }
+  }
+
+});
+
+//Endpoint para modificar proyectos en el catálogo
+app.put("/altaProyectos/:id", async (req, res) => {
+
+  try {
+
+    const { id } = req.params;
+
+    const {
+      nombre,
+      id_cliente,
+      fecha_inicio,
+      fecha_fin,
+      prioridad
+    } = req.body;
+
+    const resultado = await pool.query(
+      `
+            UPDATE proyecto
+            SET
+                nombre = UPPER($1),
+                id_cliente = $2,
+                fecha_inicio = $3,
+                fecha_fin = $4,
+                prioridad = $5
+            WHERE id_proyecto = $6
+            RETURNING *
+            `,
+      [
+        nombre,
+        id_cliente,
+        fecha_inicio,
+        fecha_fin,
+        prioridad,
+        id
+      ]
+    );
+
+    res.status(200).json({
+      mensaje: "Se ha modificado el proyecto",
+      proyecto: resultado.rows[0]
+    });
+
+  } catch (error) {
+
+    console.error(error);
+
+    res.status(500).json({
+      mensaje: error.message
+    });
+
+  }
 
 });
 
@@ -811,7 +956,7 @@ app.delete("/estadoRiesgo/:id", async (req, res) => {
 
 });
 
-// Eliminar estado de riesgo
+// Eliminar impacto delcatálogo
 app.delete("/impactos/:id", async (req, res) => {
 
   try {
@@ -890,6 +1035,113 @@ app.delete("/usuarios/:id", async (req, res) => {
   }
 
 });
+
+// Eliminar riesgo del catálogo
+app.delete("/riesgos/:id", async (req, res) => {
+
+  try {
+
+    const { id } = req.params;
+
+    const resultado = await pool.query(
+      `
+            DELETE FROM riesgo
+            WHERE idriesgo = $1
+            RETURNING *
+            `,
+      [id]
+    );
+
+    if (resultado.rows.length === 0) {
+
+      return res.status(404).json({
+        mensaje: "Riesgo no encontrado en catálogo"
+      });
+
+    }
+
+    res.status(200).json({
+      mensaje: "Riesgo eliminado del catálogo correctamente"
+    });
+
+  } catch (error) {
+
+    console.error(error);
+
+    res.status(500).json({
+      mensaje: "Error al eliminar riesgo del catálogo"
+    });
+
+  }
+
+});
+
+// Eliminar proyecto del catálogo
+app.delete("/altaProyectos/:id", async (req, res) => {
+
+  try {
+
+    const { id } = req.params;
+
+    const resultado = await pool.query(
+      `
+            DELETE FROM proyecto
+            WHERE id_proyecto = $1
+            RETURNING *
+            `,
+      [id]
+    );
+
+    if (resultado.rows.length === 0) {
+
+      return res.status(404).json({
+        mensaje: "Proyecto no encontrado en catálogo"
+      });
+
+    }
+
+    res.status(200).json({
+      mensaje: "Riesgo eliminado del catálogo correctamente"
+    });
+
+  } catch (error) {
+
+    console.error(error);
+
+    res.status(500).json({
+      mensaje: "Error al eliminar riesgo del catálogo"
+    });
+
+  }
+
+});
+
+// Dashboard general
+app.get("/dashboard", async (req, res) => {
+
+  try {
+
+    const resultado = await pool.query(`
+      SELECT
+      (SELECT COUNT(*) FROM proyecto) AS proyectos,
+      (SELECT COUNT(*) FROM actividad) AS actividades,
+      (SELECT COUNT(*) FROM riesgo) AS riesgos      
+    `);
+
+    res.json(resultado.rows[0]);
+
+  } catch (error) {
+
+    console.error(error);
+
+    res.status(500).json({
+      mensaje: "Error al obtener dashboard"
+    });
+
+  }
+
+});
+
 
 app.listen(3001, () => {
   console.log("================================");

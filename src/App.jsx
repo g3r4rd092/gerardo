@@ -11,6 +11,7 @@ import Riesgos from './pages/Riesgos';
 import AltaRiesgo from './pages/AltaRiesgo';
 import ControlImpactos from "./pages/ControlImpactos";
 import CatalogoRiesgos from "./pages/CatalogoRiesgos";
+import GestionProyectos from "./pages/GestionProyectos";
 
 function App() {
   return (
@@ -104,6 +105,15 @@ function App() {
         element={
           <ProtectedRoutes>
             <CatalogoRiesgos />
+          </ProtectedRoutes>
+        }
+      />
+
+      <Route
+        path="/gestion-proyectos"
+        element={
+          <ProtectedRoutes>
+            <GestionProyectos />
           </ProtectedRoutes>
         }
       />

@@ -157,3 +157,26 @@ export const actualizarCatalogoRiesgo = async (
 
     return data;
 };
+
+export const eliminarRiesgoCatalogo = async (id) => {
+
+    const response = await fetch(
+        `${API_URL}/riesgos/${id}`,
+        {
+            method: "DELETE"
+        }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+
+        throw new Error(
+            data.mensaje ||
+            "Error al eliminar riesgo del catálogo"
+        );
+
+    }
+
+    return data;
+};

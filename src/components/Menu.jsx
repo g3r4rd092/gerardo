@@ -3,8 +3,14 @@ import IconoBis from "../assets/imagenes/bis-logo.jpg";
 
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import "sweetalert2/src/sweetalert2.scss";
+import "../css/estilos.css";
+import "../css/sidebars.css";
+
+import * as bootstrap from 'bootstrap';
+import { useState } from "react";
 
 function Menu() {
+    const [menuAbierto, setMenuAbierto] = useState(null);
     const location = useLocation();
     const navigate = useNavigate();
     const token = localStorage.getItem("token");
@@ -69,6 +75,15 @@ function Menu() {
             ? "activo"
             : "";
     };
+    console.log(bootstrap);
+
+    const toggleMenu = (menu) => {
+        setMenuAbierto(
+            menuAbierto === menu
+                ? null
+                : menu
+        );
+    };
 
 
     return (
@@ -103,16 +118,14 @@ function Menu() {
                     <li className="mb-1">
                         <button
                             className="btn btn-toggle align-items-center rounded collapsed"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#inicio-collapse"
-                            aria-expanded="false"
+                            onClick={() => toggleMenu("usuarios")}
                         >
                             Usuarios
                         </button>
 
                         <div
-                            className="collapse"
-                            id="inicio-collapse"
+                            className={menuAbierto === "usuarios" ? "collapse show" : "collapse"}
+                            id="usuarios-collapse"
                         >
                             <ul className="btn-toggle-nav list-unstyled fw-normal pb-1 small">
 
@@ -143,16 +156,14 @@ function Menu() {
                     <li className="mb-1">
                         <button
                             className="btn btn-toggle align-items-center rounded collapsed"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#ordenes-collapse"
-                            aria-expanded="false"
+                            onClick={() => toggleMenu("proyectos")}
                         >
                             Proyectos
                         </button>
 
                         <div
-                            className="collapse"
-                            id="ordenes-collapse"
+                            className={menuAbierto === "proyectos" ? "collapse show" : "collapse"}
+                            id="proyectos-collapse"
                         >
                             <ul className="btn-toggle-nav list-unstyled fw-normal pb-1 small">
 
@@ -167,22 +178,13 @@ function Menu() {
 
                                 <li>
                                     <Link
-                                        to="/ordenes/nueva"
-                                        className={menuActivo("/ordenes/nueva")}
+                                        to="/gestion-proyectos"
+                                        className={menuActivo("/gestion-proyectos")}
                                     >
-                                        Modificar proyecto
+                                        Gestión de proyectos
                                     </Link>
                                 </li>
-
-                                <li>
-                                    <Link
-                                        to="/ordenes/nueva"
-                                        className={menuActivo("/ordenes/nueva")}
-                                    >
-                                        Eliminar proyecto
-                                    </Link>
-                                </li>
-
+                                
                             </ul>
                         </div>
                     </li>
@@ -192,15 +194,13 @@ function Menu() {
                     <li className="mb-1">
                         <button
                             className="btn btn-toggle align-items-center rounded collapsed"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#productos-collapse"
-                            aria-expanded="false"
+                            onClick={() => toggleMenu("actividades")}
                         >
                             Actividades
                         </button>
 
                         <div
-                            className="collapse"
+                            className={menuAbierto === "actividades" ? "collapse show" : "collapse"}
                             id="productos-collapse"
                         >
                             <ul className="btn-toggle-nav list-unstyled fw-normal pb-1 small">
@@ -241,15 +241,13 @@ function Menu() {
                     <li className="mb-1">
                         <button
                             className="btn btn-toggle align-items-center rounded collapsed"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#riesgos-collapse"
-                            aria-expanded="false"
+                            onClick={() => toggleMenu("riesgos")}
                         >
                             Riesgos
                         </button>
 
                         <div
-                            className="collapse"
+                            className={menuAbierto === "riesgos" ? "collapse show" : "collapse"}
                             id="riesgos-collapse"
                         >
                             <ul className="btn-toggle-nav list-unstyled fw-normal pb-1 small">
@@ -289,15 +287,13 @@ function Menu() {
                     <li className="mb-1">
                         <button
                             className="btn btn-toggle align-items-center rounded collapsed"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#incidencias-collapse"
-                            aria-expanded="false"
+                            onClick={() => toggleMenu("incidencias")}
                         >
                             Incidencias
                         </button>
 
                         <div
-                            className="collapse"
+                            className={menuAbierto === "incidencias" ? "collapse show" : "collapse"}
                             id="incidencias-collapse"
                         >
                             <ul className="btn-toggle-nav list-unstyled fw-normal pb-1 small">
@@ -319,15 +315,13 @@ function Menu() {
                     <li className="mb-1">
                         <button
                             className="btn btn-toggle align-items-center rounded collapsed"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#impactos-collapse"
-                            aria-expanded="false"
+                            onClick={() => toggleMenu("impactos")}
                         >
-                            Impactos
+                           Impactos
                         </button>
 
                         <div
-                            className="collapse"
+                            className={menuAbierto === "impactos" ? "collapse show" : "collapse"}
                             id="impactos-collapse"
                         >
                             <ul className="btn-toggle-nav list-unstyled fw-normal pb-1 small">
@@ -349,15 +343,13 @@ function Menu() {
                     <li className="mb-1">
                         <button
                             className="btn btn-toggle align-items-center rounded collapsed"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#dashboard-collapse"
-                            aria-expanded="false"
+                            onClick={() => toggleMenu("dashboard")}
                         >
                             Dashboard
                         </button>
 
                         <div
-                            className="collapse"
+                            className={menuAbierto === "dashboard" ? "collapse show" : "collapse"}
                             id="dashboard-collapse"
                         >
                             <ul className="btn-toggle-nav list-unstyled fw-normal pb-1 small">
@@ -396,15 +388,14 @@ function Menu() {
                         <button
                             className="btn btn-toggle align-items-center rounded collapsed"
                             data-bs-toggle="collapse"
-                            data-bs-target="#account-collapse"
-                            aria-expanded="false"
+                            onClick={() => toggleMenu("perfil")}
                         >
                             Mi perfil
                         </button>
 
                         <div
-                            className="collapse"
-                            id="account-collapse"
+                            className={menuAbierto === "perfil" ? "collapse show" : "collapse"}
+                            id="perfil-collapse"
                         >
                             <ul className="btn-toggle-nav list-unstyled fw-normal pb-1 small">
 
