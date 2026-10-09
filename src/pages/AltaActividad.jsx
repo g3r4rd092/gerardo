@@ -8,7 +8,7 @@ import "../css/estilos.css";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import "sweetalert2/src/sweetalert2.scss";
 
-import { buscarProyectoPorId } from "../services/actividadService";
+import { buscarProyectoPorId, registrarActividades } from "../services/actividadService";
 
 
 function AltaActividad() {
@@ -24,6 +24,13 @@ function AltaActividad() {
     const [nombreActividad, setNombreActividad] = useState("");
 
     const [actividades, setActividades] = useState([]);
+
+    const [actividad, setActividad] = useState({
+        descripcion: "",
+        idresponsable: "",
+        fecha_inicio: "",
+        fecha_fin: ""
+    });
 
     const [form, setForm] = useState({
         id_proyecto: "",
@@ -146,6 +153,76 @@ function AltaActividad() {
         });
     };
 
+    const guardarActividades = async () => {
+
+        try {
+
+            if (
+                actividades.length === 0
+            ) {
+
+                Swal.fire({
+                    icon: "warning",
+                    title: "No hay actividades"
+                });
+
+                return;
+
+            }
+
+            const datos = {
+
+                idproyecto:
+                    form.id_proyecto,
+
+                actividades:
+                    actividades.map(
+                        item => ({
+                            nombre:
+                                item.nombreActividad,
+
+                            idresponsable:
+                                item.responsable,
+
+                            fechainicio:
+                                item.fechaInicio
+                                    .toISOString()
+                                    .split("T")[0],
+
+                            fechatermino:
+                                item.fechaTermino
+                                    .toISOString()
+                                    .split("T")[0]
+                        })
+                    )
+
+            };
+
+            console.log(datos);
+
+            const respuesta =
+                await registrarActividades(
+                    datos
+                );
+
+            Swal.fire({
+                icon: "success",
+                title: respuesta.mensaje
+            });
+
+            setActividades([]);
+
+        } catch (error) {
+
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: error.message
+            });
+
+        }
+
+    };
 
     return (
 
@@ -240,7 +317,7 @@ function AltaActividad() {
                                                         id="form3Example8"
                                                         value={nombreActividad}
                                                         onChange={(e) => setNombreActividad(e.target.value)}
-                                                        
+
                                                     />
                                                 </div>
 
@@ -355,8 +432,8 @@ function AltaActividad() {
                                         <input
                                             className="btn btn-bis"
                                             type="button"
-                                            value="Modificar"
-
+                                            value="Registrar actividades"
+                                            onClick={guardarActividades}
                                         />
                                     </div>
                                 </div>

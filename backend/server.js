@@ -435,6 +435,71 @@ app.post("/riesgos", async (req, res) => {
   }
 });
 
+
+//Registro de actividades
+app.post("/actividades", async (req, res) => {
+
+  try {
+
+    const {
+      idproyecto,
+      actividades
+    } = req.body;
+
+    for (const actividad of actividades) {
+
+      await pool.query(
+        `
+                INSERT INTO actividad
+                (
+                    idproyecto,
+                    idresponsable,
+                    nombre,
+                    fechainicio,
+                    fechatermino,
+                    porcentaje,
+                    estadoactividad
+                )
+                VALUES
+                (
+                    $1,
+                    $2,
+                    UPPER($3),
+                    $4,
+                    $5,
+                    0,
+                    1
+                )
+                `,
+        [
+          idproyecto,
+          actividad.idresponsable,
+          actividad.nombre,
+          actividad.fechainicio,
+          actividad.fechatermino
+        ]
+      );
+
+    }
+
+    res.status(201).json({
+      mensaje:
+        "Actividades registradas correctamente"
+    });
+
+  } catch (error) {
+
+    console.error(error);
+
+    res.status(500).json({
+      mensaje:
+        "Error al registrar actividades"
+    });
+
+  }
+
+});
+
 //Endpoint para buscar un usuario por correo o id
 app.get("/usuarios/:correo", async (req, res) => {
 
@@ -1116,17 +1181,87 @@ app.delete("/altaProyectos/:id", async (req, res) => {
 
 });
 
-// Dashboard general
+//Dashboard general
 app.get("/dashboard", async (req, res) => {
 
   try {
 
     const resultado = await pool.query(`
-      SELECT
-      (SELECT COUNT(*) FROM proyecto) AS proyectos,
-      (SELECT COUNT(*) FROM actividad) AS actividades,
-      (SELECT COUNT(*) FROM riesgo) AS riesgos      
-    `);
+            SELECT
+
+            (
+                SELECT COUNT(*)
+                FROM proyecto
+            ) AS proyectos,
+
+            (
+                SELECT COUNT(*)
+                FROM actividad
+            ) AS actividades,
+
+            (
+                SELECT COUNT(*)
+                FROM riesgo
+            ) AS riesgos,            
+
+            (
+                SELECT COUNT(*)
+                FROM proyecto
+                WHERE id_estatus = 1
+            ) AS en_progreso,
+
+            (
+                SELECT COUNT(*)
+                FROM proyecto
+                WHERE id_estatus = 2
+            ) AS en_riesgo,
+
+            (
+                SELECT COUNT(*)
+                FROM proyecto
+                WHERE id_estatus = 3
+            ) AS retrasado,
+             (
+                SELECT COUNT(*)
+                FROM actividad
+                WHERE estadoactividad = 1
+            ) AS en_progreso,
+
+            (
+                SELECT COUNT(*)
+                FROM actividad
+                WHERE estadoactividad = 2
+            ) AS en_riesgo,
+
+            (
+                SELECT COUNT(*)
+                FROM actividad
+                WHERE estadoactividad = 3
+            ) AS retrasadas,
+             (
+                SELECT COUNT(*)
+                FROM actividad
+                WHERE estadoactividad = 3
+            ) AS retrasado,
+			(
+                SELECT COUNT(*)
+                FROM riesgo
+                WHERE estado = 1
+            ) AS finalizado,
+
+            (
+                SELECT COUNT(*)
+                FROM riesgo
+                WHERE estado = 5
+            ) AS abierto,
+
+            (
+                SELECT COUNT(*)
+                FROM riesgo
+                WHERE estado = 2
+            ) AS en_mitigacion
+
+        `);
 
     res.json(resultado.rows[0]);
 
@@ -1136,6 +1271,132 @@ app.get("/dashboard", async (req, res) => {
 
     res.status(500).json({
       mensaje: "Error al obtener dashboard"
+    });
+
+  }
+
+});
+
+// Dashboard - proyectos por estatus
+app.get("/dashboard/estatus-proyectos", async (req, res) => {
+
+  try {
+
+    const resultado = await pool.query(`
+           SELECT
+            (SELECT COUNT(*) FROM proyecto) AS proyectos,
+
+            (
+              SELECT COUNT(*)
+              FROM proyecto
+              WHERE id_estatus = 1
+            ) AS en_progreso,
+
+            (
+                SELECT COUNT(*)
+                FROM proyecto
+                WHERE id_estatus = 2
+            ) AS en_riesgo,
+
+            (
+                SELECT COUNT(*)
+                FROM proyecto
+                WHERE id_estatus = 3
+            ) AS retrasados
+        `);
+
+    res.json(resultado.rows);
+
+  } catch (error) {
+
+    console.error(error);
+
+    res.status(500).json({
+      mensaje: "Error al obtener estatus de proyectos"
+    });
+
+  }
+
+});
+
+// Dashboard - actividades por estatus
+app.get("/dashboard/estatus-actividades", async (req, res) => {
+
+  try {
+
+    const resultado = await pool.query(`
+           SELECT
+            (SELECT COUNT(*) FROM actividad) AS actividad,
+
+            (
+              SELECT COUNT(*)
+              FROM actividad
+              WHERE estadoactividad = 1
+            ) AS en_progreso,
+
+            (
+                SELECT COUNT(*)
+                FROM actividad
+                WHERE estadoactividad = 2
+            ) AS en_riesgo,
+
+            (
+                SELECT COUNT(*)
+                FROM actividad
+                WHERE estadoactividad = 3
+            ) AS retrasadas
+        `);
+
+    res.json(resultado.rows);
+
+  } catch (error) {
+
+    console.error(error);
+
+    res.status(500).json({
+      mensaje: "Error al obtener estatus de proyectos"
+    });
+
+  }
+
+});
+
+// Dashboard - actividades por estatus
+app.get("/dashboard/estatus-riesgos", async (req, res) => {
+
+  try {
+
+    const resultado = await pool.query(`
+           SELECT
+            (SELECT COUNT(*) FROM riesgo) AS riesgo,
+
+            (
+              SELECT COUNT(*)
+              FROM riesgo
+              WHERE estado = 1
+            ) AS finalizado,
+
+            (
+                SELECT COUNT(*)
+                FROM riesgo
+              WHERE estado = 5
+            ) AS abierto,
+
+            (
+                SELECT COUNT(*)
+                FROM riesgo
+              WHERE estado = 2
+            ) AS en_mitigacion
+        `);
+
+    res.json(resultado.rows);
+
+  } catch (error) {
+
+    console.error(error);
+
+    res.status(500).json({
+      mensaje: "Error al obtener estatus de proyectos"
     });
 
   }

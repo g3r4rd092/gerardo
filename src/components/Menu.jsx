@@ -219,18 +219,9 @@ function Menu() {
                                         to="/productos/nuevo"
                                         className={menuActivo("/productos/nuevo")}
                                     >
-                                        Modificar actividad
+                                        Gestionar actividades
                                     </Link>
-                                </li>
-
-                                <li>
-                                    <Link
-                                        to="/productos/nuevo"
-                                        className={menuActivo("/productos/nuevo")}
-                                    >
-                                        Eliminar actividad
-                                    </Link>
-                                </li>
+                                </li>                              
 
                             </ul>
                         </div>
