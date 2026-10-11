@@ -2,12 +2,12 @@
 -- PostgreSQL database dump
 --
 
-\restrict 42iqV75qmcEejt3WlJYCYEshcyrORyx0CUXiwVg1Zjkd7P9GqjRX3ZaP2Rifbfd
+\restrict OdvFN1sf18xqMMVEk2ikeXu9BKKv33NFKgChVWfKwFjN9Uw1lTOKn2xhqpeZZRP
 
 -- Dumped from database version 18.6
 -- Dumped by pg_dump version 18.6
 
--- Started on 2026-10-10 19:38:44
+-- Started on 2026-10-10 20:07:56
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -525,13 +525,19 @@ A	16
 A	17
 A	18
 A	19
-2	2
-2	3
 PM	2
 PM	3
 D	7
 LP	2
 LP	3
+LP	12
+LP	13
+LP	14
+LP	15
+PM	12
+PM	13
+PM	14
+PM	15
 \.
 
 
@@ -594,8 +600,8 @@ COPY public.riesgo (idriesgo, descripcion, idproyecto, impacto, probabilidad, es
 
 COPY public.usuario (id_empleado, nombre, apepat, apemat, contrasena, correo, id_perfil) FROM stdin;
 5	LUISA	MARTINEZ	AVILES	$2b$10$oAg4FfpVr.ekI0neW1.7h.1WCqdSDah.zLw6ClRQnePLbUNrezQ9W	luisa.martinez@bism.com.mx	LP
-4	GERARDO MANUEL	GOMEZ	VAZQUEZ	$2b$10$Qvbv.JnWAw7nW9Jn7cLVku3B/nF33wsi2SH2aDhl1EKKiAcFUDfmm	gerardo.gomez@bism.com.mx	C
-6	JUAN	GARCIA	LOPEZ	$2b$10$md3X.Zuh3ntn/bpatE2P6OKI85oVZMvsdMw24JEiGb7h/p5Ix60f.	juan.garcia@bism.com.mx	A
+4	GERARDO MANUEL	GOMEZ	VAZQUEZ	$2b$10$Qvbv.JnWAw7nW9Jn7cLVku3B/nF33wsi2SH2aDhl1EKKiAcFUDfmm	gerardo.gomez@bism.com.mx	A
+7	JUAN	GARCIA	CRUZ	$2b$10$v/3BcAoxs2fT8zHIV9mgJu6iAOp1VQHVReYoIBc3bC5w4xTc/RTIC	juan.garcia@bism.com.mx	PM
 \.
 
 
@@ -677,7 +683,7 @@ SELECT pg_catalog.setval('public.riesgo_idriesgo_seq', 1, true);
 -- Name: usuario_id_empleado_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.usuario_id_empleado_seq', 6, true);
+SELECT pg_catalog.setval('public.usuario_id_empleado_seq', 7, true);
 
 
 --
@@ -698,11 +704,11 @@ ALTER TABLE ONLY public.proyecto
     ADD CONSTRAINT proyecto_pkey PRIMARY KEY (id_proyecto);
 
 
--- Completed on 2026-10-10 19:38:45
+-- Completed on 2026-10-10 20:07:56
 
 --
 -- PostgreSQL database dump complete
 --
 
-\unrestrict 42iqV75qmcEejt3WlJYCYEshcyrORyx0CUXiwVg1Zjkd7P9GqjRX3ZaP2Rifbfd
+\unrestrict OdvFN1sf18xqMMVEk2ikeXu9BKKv33NFKgChVWfKwFjN9Uw1lTOKn2xhqpeZZRP
 
