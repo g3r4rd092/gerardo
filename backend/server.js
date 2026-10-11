@@ -40,8 +40,16 @@ app.post("/login", async (req, res) => {
 
     const resultado = await pool.query(
       `
-            SELECT *
-            FROM usuario
+           SELECT
+            u.id_empleado,
+            u.nombre,
+            u.correo,
+            u.contrasena,
+            u.id_perfil,
+            p.descripcion AS perfil
+            FROM usuario u
+            INNER JOIN perfil_usuario p
+            ON p.idperfil = u.id_perfil
             WHERE correo = $1
             `,
       [usuario.trim()]
@@ -74,8 +82,9 @@ app.post("/login", async (req, res) => {
 
     const token = jwt.sign(
       {
-        id: usuarioDB.id_usuario,
-        correo: usuarioDB.correo
+        id: usuarioDB.id_empleado,
+        correo: usuarioDB.correo,
+        id_perfil: usuarioDB.id_perfil
       },
       SECRET_KEY,
       {
@@ -309,7 +318,7 @@ app.post("/altaProyectos", async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({
-      mensaje: "Error al crear proyecto"
+      mensaje: error.message
     });
   }
 });
@@ -1208,36 +1217,36 @@ app.get("/dashboard", async (req, res) => {
                 SELECT COUNT(*)
                 FROM proyecto
                 WHERE id_estatus = 1
-            ) AS en_progreso,
+            ) AS proyectos_en_progreso,
 
             (
                 SELECT COUNT(*)
                 FROM proyecto
                 WHERE id_estatus = 2
-            ) AS en_riesgo,
+            ) AS proyectos_en_riesgo,
 
             (
                 SELECT COUNT(*)
                 FROM proyecto
                 WHERE id_estatus = 3
-            ) AS retrasado,
+            ) AS proyectos_retrasado,
              (
                 SELECT COUNT(*)
                 FROM actividad
                 WHERE estadoactividad = 1
-            ) AS en_progreso,
+            ) AS actividades_en_progreso,
 
             (
                 SELECT COUNT(*)
                 FROM actividad
                 WHERE estadoactividad = 2
-            ) AS en_riesgo,
+            ) AS actividades_en_riesgo,
 
             (
                 SELECT COUNT(*)
                 FROM actividad
                 WHERE estadoactividad = 3
-            ) AS retrasadas,
+            ) AS actividades_retrasadas,
              (
                 SELECT COUNT(*)
                 FROM actividad
@@ -1247,19 +1256,19 @@ app.get("/dashboard", async (req, res) => {
                 SELECT COUNT(*)
                 FROM riesgo
                 WHERE estado = 1
-            ) AS finalizado,
+            ) AS riesgo_finalizado,
 
             (
                 SELECT COUNT(*)
                 FROM riesgo
                 WHERE estado = 5
-            ) AS abierto,
+            ) AS riesgo_abierto,
 
             (
                 SELECT COUNT(*)
                 FROM riesgo
                 WHERE estado = 2
-            ) AS en_mitigacion
+            ) AS riesgo_en_mitigacion
 
         `);
 
@@ -1290,19 +1299,19 @@ app.get("/dashboard/estatus-proyectos", async (req, res) => {
               SELECT COUNT(*)
               FROM proyecto
               WHERE id_estatus = 1
-            ) AS en_progreso,
+            ) AS proyectos_en_progreso,
 
             (
                 SELECT COUNT(*)
                 FROM proyecto
                 WHERE id_estatus = 2
-            ) AS en_riesgo,
+            ) AS proyectos_en_riesgo,
 
             (
                 SELECT COUNT(*)
                 FROM proyecto
                 WHERE id_estatus = 3
-            ) AS retrasados
+            ) AS proyectos_retrasados
         `);
 
     res.json(resultado.rows);
@@ -1332,19 +1341,19 @@ app.get("/dashboard/estatus-actividades", async (req, res) => {
               SELECT COUNT(*)
               FROM actividad
               WHERE estadoactividad = 1
-            ) AS en_progreso,
+            ) AS actividades_en_progreso,
 
             (
                 SELECT COUNT(*)
                 FROM actividad
                 WHERE estadoactividad = 2
-            ) AS en_riesgo,
+            ) AS actividades_en_riesgo,
 
             (
                 SELECT COUNT(*)
                 FROM actividad
                 WHERE estadoactividad = 3
-            ) AS retrasadas
+            ) AS actividades_retrasadas
         `);
 
     res.json(resultado.rows);
@@ -1374,19 +1383,19 @@ app.get("/dashboard/estatus-riesgos", async (req, res) => {
               SELECT COUNT(*)
               FROM riesgo
               WHERE estado = 1
-            ) AS finalizado,
+            ) AS riesgo_finalizado,
 
             (
                 SELECT COUNT(*)
                 FROM riesgo
               WHERE estado = 5
-            ) AS abierto,
+            ) AS riesgo_abierto,
 
             (
                 SELECT COUNT(*)
                 FROM riesgo
               WHERE estado = 2
-            ) AS en_mitigacion
+            ) AS riesgo_en_mitigacion
         `);
 
     res.json(resultado.rows);
@@ -1397,6 +1406,49 @@ app.get("/dashboard/estatus-riesgos", async (req, res) => {
 
     res.status(500).json({
       mensaje: "Error al obtener estatus de proyectos"
+    });
+
+  }
+
+});
+
+app.get("/menus/:perfil", async (req, res) => {
+
+  try {
+
+    const { perfil } = req.params;
+
+    const resultado = await pool.query(
+      `
+            SELECT
+                m.idmenu,
+                m.nombre,
+                m.ruta,
+                m.padre,
+                m.orden
+            FROM menu m
+            INNER JOIN perfil_menu pm
+                ON pm.idmenu = m.idmenu
+            WHERE pm.idperfil = $1
+            ORDER BY
+                COALESCE(m.padre, m.idmenu),
+                m.orden
+            `,
+      [perfil]
+    );
+
+    res.json({
+      success: true,
+      menus: resultado.rows
+    });
+
+  } catch (error) {
+
+    console.error(error);
+
+    res.status(500).json({
+      success: false,
+      mensaje: "Error al obtener menús"
     });
 
   }

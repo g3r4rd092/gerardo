@@ -7,13 +7,17 @@ import "../css/estilos.css";
 import "../css/sidebars.css";
 
 import * as bootstrap from 'bootstrap';
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { obtenerMenus } from "../services/menuService";
 
 function Menu() {
     const [menuAbierto, setMenuAbierto] = useState(null);
+    const [menus, setMenus] = useState([]);
     const location = useLocation();
     const navigate = useNavigate();
     const token = localStorage.getItem("token");
+
+
 
     const iniciarSesion = async () => {
         const respuesta = await fetch(
@@ -39,8 +43,9 @@ function Menu() {
                 JSON.stringify(datos.usuario)
             );
 
-            console.log("TOKEN GUARDADO:",
-                localStorage.getItem("token")
+            localStorage.setItem(
+                "id_perfil",
+                datos.usuario.id_perfil
             );
 
             navigate("/inicio");
@@ -49,6 +54,36 @@ function Menu() {
 
     // Obtener el usuario guardado después del login
     const usuario = JSON.parse(localStorage.getItem("usuario"));
+
+    const perfil = usuario?.id_perfil;
+
+    useEffect(() => {
+
+        cargarMenus();
+
+    }, []);
+
+
+    const cargarMenus =
+        async () => {
+
+            try {
+
+                const data =
+                    await obtenerMenus(perfil);
+
+                console.log("MENUS RECIBIDOS");
+                console.log(data);
+
+                setMenus(data.menus);
+
+            } catch (error) {
+
+                console.error(error);
+
+            }
+
+        };
 
     // Cerrar sesión
     const cerrarSesion = async () => {
@@ -84,6 +119,22 @@ function Menu() {
                 : menu
         );
     };
+
+    const menusPadre =
+        menus.filter(
+            item =>
+                item.padre === null
+        );
+
+    const obtenerSubmenus =
+        (idPadre) => {
+
+            return menus.filter(
+                item =>
+                    item.padre === idPadre
+            );
+
+        };
 
 
     return (
@@ -184,7 +235,7 @@ function Menu() {
                                         Gestión de proyectos
                                     </Link>
                                 </li>
-                                
+
                             </ul>
                         </div>
                     </li>
@@ -221,7 +272,7 @@ function Menu() {
                                     >
                                         Gestionar actividades
                                     </Link>
-                                </li>                              
+                                </li>
 
                             </ul>
                         </div>
@@ -308,7 +359,7 @@ function Menu() {
                             className="btn btn-toggle align-items-center rounded collapsed"
                             onClick={() => toggleMenu("impactos")}
                         >
-                           Impactos
+                            Impactos
                         </button>
 
                         <div

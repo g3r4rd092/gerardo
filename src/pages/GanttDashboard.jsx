@@ -18,24 +18,23 @@ function GanttDashboard() {
     const [dashboard, setDashboard] = useState({
         proyectos: 0,
         actividades: 0,
-        riesgos: 0,
-        incidencias: 0
+        riesgos: 0        
     });
 
     const datosProyectos = [
         {
             estado: "En progreso",
-            total: Number(dashboard.en_progreso),
+            total: Number(dashboard.proyectos_en_progreso),
             color: "#198754"
         },
         {
             estado: "En riesgo",
-            total: Number(dashboard.en_riesgo),
+            total: Number(dashboard.proyectos_en_riesgo),
             color: "#ffc107"
         },
         {
             estado: "Retrasado",
-            total: Number(dashboard.retrasado),
+            total: Number(dashboard.proyectos_retrasado),
             color: "#dc3545"
         }
     ];
@@ -43,17 +42,17 @@ function GanttDashboard() {
     const datosActividades = [
         {
             estado: "En progreso",
-            total: Number(dashboard.en_progreso),
+            total: Number(dashboard.actividades_en_progreso),
             color: "#198754"
         },
         {
             estado: "En riesgo",
-            total: Number(dashboard.en_riesgo),
+            total: Number(dashboard.actividades_en_riesgo),
             color: "#ffc107"
         },
         {
             estado: "Retrasado",
-            total: Number(dashboard.retrasadas),
+            total: Number(dashboard.actividades_retrasadas),
             color: "#dc3545"
         }
     ];
@@ -61,17 +60,17 @@ function GanttDashboard() {
     const datosRiesgos = [
         {
             estado: "Finalizados",
-            total: Number(dashboard.finalizado),
+            total: Number(dashboard.riesgo_finalizado),
             color: "#198754"
         },
         {
             estado: "Abiertos",
-            total: Number(dashboard.abierto),
+            total: Number(dashboard.riesgo_abierto),
             color: "#ffc107"
         },
         {
             estado: "En mitigación",
-            total: Number(dashboard.en_mitigacion),
+            total: Number(dashboard.riesgo_en_mitigacion),
             color: "#dc3545"
         }
     ];
@@ -198,17 +197,17 @@ function GanttDashboard() {
 
                                     <p className="text-success mb-1">
                                         En progreso:
-                                        {dashboard.en_progreso}
+                                        {dashboard.proyectos_en_progreso}
                                     </p>
 
                                     <p className="text-warning mb-1">
                                         En riesgo:
-                                        {dashboard.en_riesgo}
+                                        {dashboard.proyectos_en_riesgo}
                                     </p>
 
                                     <p className="text-danger mb-1">
                                         Retrasados:
-                                        {dashboard.retrasado}
+                                        {dashboard.proyectos_retrasado}
                                     </p>
 
                                 </div>
@@ -282,17 +281,17 @@ function GanttDashboard() {
 
                                     <p className="text-success mb-1">
                                         En progreso:
-                                        {dashboard.en_progreso}
+                                        {dashboard.actividades_en_progreso}
                                     </p>
 
                                     <p className="text-warning mb-1">
                                         En riesgo:
-                                        {dashboard.en_riesgo}
+                                        {dashboard.actividades_en_riesgo}
                                     </p>
 
                                     <p className="text-danger mb-1">
                                         Retrasadas:
-                                        {dashboard.retrasadas}
+                                        {dashboard.actividades_retrasadas}
                                     </p>
 
                                 </div>
@@ -366,17 +365,17 @@ function GanttDashboard() {
 
                                     <p className="text-success mb-1">
                                         Finalizados:
-                                        {dashboard.finalizado}
+                                        {dashboard.riesgo_finalizado}
                                     </p>
 
                                     <p className="text-warning mb-1">
                                         Abiertos:
-                                        {dashboard.abierto}
+                                        {dashboard.riesgo_abierto}
                                     </p>
 
                                     <p className="text-danger mb-1">
                                         En mitigación:
-                                        {dashboard.en_mitigacion}
+                                        {dashboard.riesgo_en_mitigacion}
                                     </p>
 
                                 </div>
