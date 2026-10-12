@@ -175,12 +175,14 @@ function CatalogoRiesgos() {
                             <div className="card card-registration my-4" style={{ borderStyle: "none" }}>
                                 <div className="row g-0" style={{ width: "100%" }}>
                                     <div style={{ height: "500px" }}>
-                                        <div className="card-body p-md-5 text-black" style={{ marginTop: "-5%" }}>
-
-                                            <h3 className="mb-5 text-uppercase">
-                                                Catálogo de riesgos
-                                            </h3>
-                                            <table className="table" id="tabla-actividades">
+                                         <div className="card-body p-3 text-black">
+                                                <div className="card-header card-header-bis text-white">
+                                                    <h5 className="mb-0">
+                                                        <i class="bi bi-speedometer2 me-2"></i>
+                                                        Control de riesgos
+                                                    </h5>
+                                                </div>
+                                            <table className="table table-hover align-middle" id="tabla-actividades">
                                                 <thead>
                                                     <tr>
                                                         <th scope="col">#</th>

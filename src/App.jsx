@@ -12,6 +12,10 @@ import AltaRiesgo from './pages/AltaRiesgo';
 import ControlImpactos from "./pages/ControlImpactos";
 import CatalogoRiesgos from "./pages/CatalogoRiesgos";
 import GestionProyectos from "./pages/GestionProyectos";
+import GestionClientes from "./pages/GestionClientes";
+import ControlIncidencias from "./pages/ControlIncidencias";
+import GestionMenus from "./pages/GestionMenus";
+
 
 function App() {
   return (
@@ -114,6 +118,33 @@ function App() {
         element={
           <ProtectedRoutes>
             <GestionProyectos />
+          </ProtectedRoutes>
+        }
+      />
+
+      <Route
+        path="/gestion-clientes"
+        element={
+          <ProtectedRoutes>
+            <GestionClientes />
+          </ProtectedRoutes>
+        }
+      />
+
+      <Route
+        path="/control-incidencias"
+        element={
+          <ProtectedRoutes>
+            <ControlIncidencias />
+          </ProtectedRoutes>
+        }
+      />
+
+      <Route
+        path="/permiso-usuario"
+        element={
+          <ProtectedRoutes>
+            <GestionMenus />
           </ProtectedRoutes>
         }
       />

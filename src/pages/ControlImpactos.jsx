@@ -245,11 +245,13 @@ function ControlImpactos() {
                                 <div className="card card-registration my-4" >
                                     <div className="row g-0" style={{ width: "100%" }}>
                                         <div>
-                                            <div className="card-body p-md-5 text-black" style={{ marginTop: "-5%" }}>
-
-                                                <h3 className="mb-5 text-uppercase">
-                                                    Crear nuevo impacto
-                                                </h3>
+                                            <div className="card-body p-3 text-black">
+                                                <div className="card-header card-header-bis text-white">
+                                                    <h5 className="mb-0">
+                                                        <i class="bi bi-journal-medical me-2"></i>
+                                                        Impactos
+                                                    </h5>
+                                                </div>
 
 
 
@@ -271,12 +273,13 @@ function ControlImpactos() {
                                                     />
                                                 </div>
                                                 <div className="d-flex justify-content-end pt-3">
-                                                    <input
-                                                        className="btn btn-bis"
-                                                        type="button"
-                                                        value="Agregar"
+                                                    <button
+                                                        className="btn btn-bis w-100"
                                                         onClick={registroImpacto}
-                                                    />
+                                                    >
+                                                        <i className="bi bi-plus-circle me-2"></i>
+                                                        Crear nuevo
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
@@ -285,10 +288,13 @@ function ControlImpactos() {
                             </div>
                             <div className="col-md-6">
                                 <div className="card card-registration my-4" id="card-tabla">
-                                    <h3 className="mb-5 text-uppercase">
-                                        Impactos registrados
-                                    </h3>
-                                    <table class="table" id="tabla-actividades">
+                                    <div className="card-header card-header-bis text-white">
+                                        <h5 className="mb-0">
+                                            <i class="bi bi-speedometer2 me-2"></i>
+                                            Detalle de impactos registrados
+                                        </h5>
+                                    </div>
+                                    <table className="table table-hover align-middle" id="tabla-actividades">
                                         <thead>
                                             <tr>
                                                 <th scope="col">#</th>

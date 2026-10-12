@@ -152,6 +152,7 @@ app.get("/projects", async (req, res) => {
 
 //Obtener los impactos del catálogo de BD
 app.get("/impacts", async (req, res) => {
+
   try {
     const resultado = await pool.query(`
       SELECT id, descripcion
@@ -444,6 +445,79 @@ app.post("/riesgos", async (req, res) => {
   }
 });
 
+//Enpoint para crear nuevos clientes
+app.post("/clientes", async (req, res) => {
+  try {
+
+    const {
+      nombre
+    } = req.body;
+
+
+    const nuevoCliente = await pool.query(
+      `INSERT INTO cliente
+            (
+                nombre
+            )
+            VALUES (
+            UPPER($1))
+            RETURNING *`,
+      [
+        nombre
+      ]
+    );
+
+    res.status(201).json({
+      mensaje: "Cliente agregado correctamente",
+      cliente: nuevoCliente.rows[0]
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      mensaje: "Error al registrar nuevo cliente" || error.message
+    });
+  }
+});
+
+
+//Enpoint para guardar incidencias
+app.post("/incidencia", async (req, res) => {
+  try {
+
+    const {
+      descripcion,
+      proyecto
+    } = req.body;
+
+
+    const nuevaIncidencia = await pool.query(
+      `INSERT INTO incidencia
+            (
+                descripcion,
+                id_proyecto
+            )
+            VALUES (
+            UPPER($1),$2)
+            RETURNING *`,
+      [
+        descripcion,
+        proyecto
+      ]
+    );
+
+    res.status(201).json({
+      mensaje: "Incidencia registrada correctamente",
+      incidencia: nuevaIncidencia.rows[0]
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      mensaje: "Error al registrar nueva incidencia" || error.message
+    });
+  }
+});
 
 //Registro de actividades
 app.post("/actividades", async (req, res) => {
@@ -657,7 +731,7 @@ app.get("/riesgos", async (req, res) => {
 app.get("/altaProyectos", async (req, res) => {
   try {
     const resultado = await pool.query(`
-      SELECT p.id_proyecto,
+      SELECT DISTINCT(p.id_proyecto),
       p.nombre,
       p.id_cliente,
      TO_CHAR(
@@ -762,7 +836,7 @@ app.get("/estadoRiesgo", async (req, res) => {
   try {
 
     const estados = await pool.query(`
-      SELECT
+      SELECT DISTINCT
         idestadoriesgo,
         descripcion
       FROM estado_riesgo
@@ -785,8 +859,7 @@ app.get("/impactos", async (req, res) => {
   try {
 
     const impactos = await pool.query(`
-      SELECT
-        id,
+      SELECT DISTINCT(id),
         descripcion
       FROM impacto
       ORDER BY id
@@ -799,6 +872,54 @@ app.get("/impactos", async (req, res) => {
 
     res.status(500).json({
       mensaje: "Error al obtener estados de riesgo"
+    });
+  }
+});
+
+//Mostrar las incidencias registradas
+app.get("/incidencia", async (req, res) => {
+  try {
+
+    const incidencias = await pool.query(`
+      SELECT DISTINCT
+        i.id_incidencia,
+        i.descripcion,
+        i.id_proyecto,
+		    p.nombre AS nombre_proyecto
+        FROM incidencia i
+	      JOIN proyecto p
+	      ON i.id_proyecto = p.id_proyecto
+        ORDER BY id_incidencia
+    `);
+
+    res.json(incidencias.rows);
+
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      mensaje: "Error al mostrar incidencias desde el catálogo"
+    });
+  }
+});
+
+// Obtener menus padre
+app.get("/menus", async (req, res) => {
+  try {
+    const resultado = await pool.query(`
+      SELECT idmenu, nombre       
+      FROM menu
+      WHERE ruta is null
+      AND padre is null
+      ORDER BY nombre
+    `);
+
+    res.json(resultado.rows);
+  } catch (error) {
+    console.error("Error al obtener menus:", error);
+    res.status(500).json({
+      success: false,
+      mensaje: "Error al cargar menus"
     });
   }
 });
@@ -842,6 +963,29 @@ app.put("/estadoRiesgo/:id", async (req, res) => {
 
 });
 
+// Obtener clientes del catálogo
+app.get("/clientes", async (req, res) => {
+  try {
+
+    const clientes = await pool.query(`
+      SELECT DISTINCT
+        idcliente,
+        nombre
+      FROM cliente
+      ORDER BY idcliente
+    `);
+
+    res.json(clientes.rows);
+
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      mensaje: "Error al obtener los clientes desde el catálogo"
+    });
+  }
+});
+
 
 // Actualizar estado de riesgo
 app.put("/impactos/:id", async (req, res) => {
@@ -868,6 +1012,45 @@ app.put("/impactos/:id", async (req, res) => {
     res.status(200).json({
       mensaje: "Se ha modificado la descripción de impacto correctamente",
       impacto: impactoActualizado.rows[0]
+    });
+
+  } catch (error) {
+
+    console.error(error);
+
+    res.status(500).json({
+      mensaje: "Error al modificar descripción de impacto"
+    });
+
+  }
+
+});
+
+// Actualizar datos del cliente
+app.put("/clientes/:id", async (req, res) => {
+
+  try {
+
+    const { id } = req.params;
+
+    const { nombre } = req.body;
+
+    const clienteActualizado = await pool.query(
+      `
+            UPDATE cliente
+            SET nombre = UPPER($1)
+            WHERE idcliente = $2
+            RETURNING *
+            `,
+      [
+        nombre,
+        id
+      ]
+    );
+
+    res.status(200).json({
+      mensaje: "Se han guardado los nuevos datos del cliente correctamente",
+      cliente: clienteActualizado.rows[0]
     });
 
   } catch (error) {
@@ -930,6 +1113,51 @@ app.put("/riesgos/:id", async (req, res) => {
 
     res.status(500).json({
       mensaje: "Error al actualizar riesgo"
+    });
+
+  }
+
+});
+
+//Endpoint para actualizar alguna incidencia
+app.put("/incidencia/:id", async (req, res) => {
+
+  try {
+
+    const { id } = req.params;
+
+    const {
+      descripcion,
+      id_proyecto
+    } = req.body;
+
+    const resultado = await pool.query(
+      `
+            UPDATE incidencia
+            SET
+                descripcion = UPPER($1),
+                id_proyecto = $2               
+            WHERE id_incidencia = $3
+            RETURNING *
+            `,
+      [
+        descripcion,
+        id_proyecto,
+        id
+      ]
+    );
+
+    res.status(200).json({
+      mensaje: "Incidencia modificada correctamente",
+      incidencia: resultado.rows[0]
+    });
+
+  } catch (error) {
+
+    console.error(error);
+
+    res.status(500).json({
+      mensaje: "Error al modificar incidencia"
     });
 
   }
@@ -1064,6 +1292,46 @@ app.delete("/impactos/:id", async (req, res) => {
 
     res.status(500).json({
       mensaje: "Error al eliminar impacto"
+    });
+
+  }
+
+});
+
+// Eliminar cliente del catálogo
+app.delete("/clientess/:id", async (req, res) => {
+
+  try {
+
+    const { id } = req.params;
+
+    const resultado = await pool.query(
+      `
+            DELETE FROM cliente
+            WHERE idcliente = $1
+            RETURNING *
+            `,
+      [id]
+    );
+
+    if (resultado.rows.length === 0) {
+
+      return res.status(404).json({
+        mensaje: "Cliente no encontrado"
+      });
+
+    }
+
+    res.status(200).json({
+      mensaje: "El cliente se ha eliminado del sistema"
+    });
+
+  } catch (error) {
+
+    console.error(error);
+
+    res.status(500).json({
+      mensaje: "Error al eliminar cliente"
     });
 
   }
@@ -1261,7 +1529,7 @@ app.get("/dashboard", async (req, res) => {
             (
                 SELECT COUNT(*)
                 FROM riesgo
-                WHERE estado = 5
+                WHERE estado = 3
             ) AS riesgo_abierto,
 
             (
@@ -1449,6 +1717,46 @@ app.get("/menus/:perfil", async (req, res) => {
     res.status(500).json({
       success: false,
       mensaje: "Error al obtener menús"
+    });
+
+  }
+
+});
+
+// Eliminar incidencia del catálogo
+app.delete("/incidencia/:id", async (req, res) => {
+
+  try {
+
+    const { id } = req.params;
+
+    const resultado = await pool.query(
+      `
+            DELETE FROM incidencia
+            WHERE id_incidencia = $1
+            RETURNING *
+            `,
+      [id]
+    );
+
+    if (resultado.rows.length === 0) {
+
+      return res.status(404).json({
+        mensaje: "Incidencia no registrada"
+      });
+
+    }
+
+    res.status(200).json({
+      mensaje: "La incidencia se ha eliminado del sistema"
+    });
+
+  } catch (error) {
+
+    console.error(error);
+
+    res.status(500).json({
+      mensaje: "Error al eliminar incidencia"
     });
 
   }

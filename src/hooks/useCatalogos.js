@@ -12,6 +12,7 @@ export const useCatalogos = () => {
     const [proyectos, setProyectos] = useState([]);
     const [impactos, setImpactos] = useState([]);
     const [estadoRiesgo, setEstadoRiesgo] = useState([]);
+    const [menu, setMenu] = useState([]);
 
     useEffect(() => {
         cargarDatos();
@@ -28,7 +29,8 @@ export const useCatalogos = () => {
                 responsablesRes,
                 proyectosRes,
                 impactosRes,
-                estadoRiesgoRes
+                estadoRiesgoRes,
+                menuRes,
             ] = await Promise.all([
                 fetch(`${API_URL}/clientes`),
                 fetch(`${API_URL}/prioridades`),
@@ -38,7 +40,8 @@ export const useCatalogos = () => {
                 fetch(`${API_URL}/responsables`),
                 fetch(`${API_URL}/projects`),
                 fetch(`${API_URL}/impacts`),
-                fetch(`${API_URL}/estadoRiesgo`)
+                fetch(`${API_URL}/estadoRiesgo`),
+                fetch(`${API_URL}/menus`)
             ]);
 
             setClientes(await clientesRes.json());
@@ -49,6 +52,7 @@ export const useCatalogos = () => {
             setProyectos(await proyectosRes.json());
             setImpactos(await impactosRes.json());
             setEstadoRiesgo(await estadoRiesgoRes.json());
+            setMenu(await menuRes.json());
             const consecutivoData = await consecutivoRes.json();
 
             if (
@@ -71,6 +75,7 @@ export const useCatalogos = () => {
         responsables,
         proyectos,
         impactos,
-        estadoRiesgo
+        estadoRiesgo,
+        menu
     };
 };

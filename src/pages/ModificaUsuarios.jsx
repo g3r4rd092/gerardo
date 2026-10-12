@@ -189,11 +189,13 @@ function ModificaUsuarios() {
                             <div className="card card-registration my-4">
                                 <div className="row g-0" style={{ width: "100%" }}>
                                     <div>
-                                        <div className="card-body p-md-5 text-black" style={{ marginTop: "-5%" }}>
-
-                                            <h3 className="mb-5 text-uppercase">
-                                                Control de usuarios
-                                            </h3>
+                                        <div card-body p-3 text-black>
+                                            <div className="card-header card-header-bis text-white">
+                                                <h5 className="mb-0">
+                                                    <i className="bi bi-person-plus me-2"></i>
+                                                    Control de usuarios
+                                                </h5>
+                                            </div>
 
                                             <div
                                                 data-mdb-input-init
@@ -330,7 +332,7 @@ function ModificaUsuarios() {
                                                 </select>
                                             </div>
 
-                                            <div className="d-flex justify-content-end pt-3">
+                                            <div className="d-flex justify-content-end gap-2 pe-4 pb-3">
                                                 <button
                                                     className="btn btn-warning btn-lg ms-2"
                                                     onClick={modificarUsuario}

@@ -82,11 +82,13 @@ function AltaRiesgo() {
                             <div className="card card-registration my-4">
                                 <div className="row g-0" style={{ width: "100%" }}>
                                     <div>
-                                        <div className="card-body p-md-5 text-black" style={{ marginTop: "-5%" }}>
-
-                                            <h3 className="mb-5 text-uppercase">
-                                                Registro de riesgos
-                                            </h3>
+                                        <div className="card-body p-3 text-black">
+                                                <div className="card-header card-header-bis text-white">
+                                                    <h5 className="mb-0">
+                                                        <i class="bi bi-speedometer2 me-2"></i>
+                                                        Registro de riesgos
+                                                    </h5>
+                                                </div>
 
                                             {/* Descripcion */}
                                             <div data-mdb-input-init className="form-outline form-group" id="div-form-proyecto" >
@@ -210,12 +212,13 @@ function AltaRiesgo() {
                                             </div>
 
                                             <div className="d-flex justify-content-end pt-3">
-                                                <input
-                                                    className="btn btn-bis"
-                                                    type="button"
-                                                    value="Guardar"
+                                                <button
+                                                    className="btn btn-bis w-100"
                                                     onClick={guardarRiesgo}
-                                                />
+                                                >
+                                                    <i className="bi bi-plus-circle me-2"></i>
+                                                    Crear nuevo
+                                                </button>
                                             </div>
                                         </div>
                                     </div>

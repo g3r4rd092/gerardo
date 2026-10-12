@@ -25,7 +25,9 @@ function AltaProyecto() {
         fecha_fin: fechaActual,
         prioridad: ""
     });
-    
+
+    console.log(prioridades);
+
 
     const guardarProyecto = async () => {
 
@@ -77,14 +79,14 @@ function AltaProyecto() {
                         <div className="col">
                             <div className="card card-registration my-4">
                                 <div className="row g-0" style={{ width: "100%" }}>
-                                    {/*<div className="col-xl-6 d-none d-xl-block" style={{ alignContent: "center" }}>
-                                        <img src={ImgGestion}
-                                            alt="Gestion proyectos" className="img-fluid"
-                                            style={{ borderTopLeftRadius: '.25rem', borderBottomLeftRadius: '.25rem' }} />
-                                    </div>*/}
                                     <div>
-                                        <div className="card-body p-md-5 text-black" style={{ marginTop: "-5%" }}>
-                                            <h3 className="mb-5 text-uppercase" style={{ marginTop: "10px" }}>Registro de Proyectos</h3>
+                                        <div card-body p-3 text-black>
+                                            <div className="card-header card-header-bis text-white">
+                                                <h5 className="mb-0">
+                                                    <i class="bi bi-folder-plus me-2"></i>
+                                                    Registro de proyectos
+                                                </h5>
+                                            </div>
 
                                             <div data-mdb-input-init className="form-outline mb-4 form-group" id="div-form-proyecto">
                                                 <label htmlFor="form3Example8" className="form-label">No.</label>
@@ -171,6 +173,8 @@ function AltaProyecto() {
                                                         ...form,
                                                         prioridad: Number(e.target.value)
                                                     })
+
+
                                                 }
                                                     style={{ fontSize: "12px" }}>
                                                     <option>Seleccionar prioridad</option>
@@ -186,12 +190,13 @@ function AltaProyecto() {
                                             </div>
                                             <span id="span-nota">Nota: Se asignará estatus por defecto "En progreso" y porcentaje inicial 0%</span>
                                             <div className="d-flex justify-content-end pt-3">
-                                                <input
-                                                    className="btn btn-bis"
-                                                    type="button"
-                                                    value="Registrar proyecto"
+                                                <button
+                                                    className="btn btn-bis w-100"
                                                     onClick={guardarProyecto}
-                                                />
+                                                >
+                                                    <i className="bi bi-plus-circle me-2"></i>
+                                                    Registrar proyecto
+                                                </button>
                                             </div>
 
                                         </div>

@@ -236,11 +236,13 @@ function AltaActividad() {
                                 <div className="card card-registration my-4" >
                                     <div className="row g-0" style={{ width: "100%" }}>
                                         <div>
-                                            <div className="card-body p-md-5 text-black" style={{ marginTop: "-5%" }}>
-
-                                                <h3 className="mb-5 text-uppercase">
-                                                    Registro de Actividades
-                                                </h3>
+                                            <div className="card-body p-3 text-black">
+                                                <div className="card-header card-header-bis text-white">
+                                                    <h5 className="mb-0">
+                                                        <i class="bi bi-activity me-2"></i>
+                                                        Registrar actividad
+                                                    </h5>
+                                                </div>
 
                                                 <div
                                                     data-mdb-input-init
@@ -266,7 +268,7 @@ function AltaActividad() {
                                                             type="button"
                                                             onClick={buscarProyecto}
                                                         >
-                                                            Buscar
+                                                            <i class="bi bi-search me-2"></i>
                                                         </button>
 
                                                     </div>
@@ -380,11 +382,11 @@ function AltaActividad() {
                                                         disabled={!camposHabilitados}
                                                     />
                                                     <button
-                                                        className="btn btn-bis"
-                                                        type="button"
+                                                        className="btn btn-bis w-100"
                                                         onClick={agregarActividad}
                                                     >
-                                                        Agregar
+                                                        <i className="bi bi-plus-circle me-2"></i>
+                                                        Listar
                                                     </button>
                                                 </div>
                                             </div>
@@ -394,10 +396,13 @@ function AltaActividad() {
                             </div>
                             <div className="col-md-6">
                                 <div className="card card-registration my-4" id="card-tabla">
-                                    <h3 className="mb-5 text-uppercase">
-                                        Lista de actividades del proyecto
-                                    </h3>
-                                    <table class="table" id="tabla-actividades">
+                                    <div className="card-header card-header-bis text-white">
+                                        <h5 className="mb-0">
+                                            <i className="bi bi-list-task me-2"></i>
+                                            Actividades por asignar
+                                        </h5>
+                                    </div>
+                                    <table className="table table-hover align-middle" id="tabla-actividades">
                                         <thead>
                                             <tr>
                                                 <th scope="col">#</th>
@@ -429,12 +434,13 @@ function AltaActividad() {
                                         </tbody>
                                     </table>
                                     <div className="d-flex justify-content-end pt-3">
-                                        <input
-                                            className="btn btn-bis"
-                                            type="button"
-                                            value="Registrar actividades"
+                                        <button
+                                            className="btn btn-bis w-100"
                                             onClick={guardarActividades}
-                                        />
+                                        >
+                                            <i className="bi bi-plus-circle me-2"></i>
+                                            Asignar actividades
+                                        </button>
                                     </div>
                                 </div>
                             </div>

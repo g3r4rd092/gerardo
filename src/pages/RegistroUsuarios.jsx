@@ -36,19 +36,19 @@ function RegistroUsuarios() {
                 !form.perfil
             ) {
                 Swal.fire({
-                title: "Error",
-                text: "Todos los campos son obligatorios",
-                icon: "error"
-            });
+                    title: "Error",
+                    text: "Todos los campos son obligatorios",
+                    icon: "error"
+                });
                 return;
             }
 
             if (form.password !== form.confirmPassword) {
                 Swal.fire({
-                title: "Error",
-                text: "Las contraseñas no coinciden",
-                icon: "error"
-            });
+                    title: "Error",
+                    text: "Las contraseñas no coinciden",
+                    icon: "error"
+                });
                 return;
             }
 
@@ -99,15 +99,17 @@ function RegistroUsuarios() {
                             <div className="card card-registration my-4">
                                 <div className="row g-0" style={{ width: "100%" }}>
                                     <div>
-                                        <div className="card-body p-md-5 text-black" style={{ marginTop: "-5%" }}>
-
-                                            <h3 className="mb-5 text-uppercase">
-                                                Registro de Usuarios
-                                            </h3>
+                                        <div card-body p-3 text-black>
+                                            <div className="card-header card-header-bis text-white">
+                                                <h5 className="mb-0">
+                                                    <i className="bi bi-person-plus me-2"></i>
+                                                    Registro de usuarios
+                                                </h5>
+                                            </div>
 
                                             {/* Nombre */}
                                             <div data-mdb-input-init className="form-outline form-group" id="div-form-proyecto" >
-                                                <label htmlFor="form3Example8" className="form-label">Nombre completo</label>
+                                                <label htmlFor="form3Example8" className="form-label fw-bold">Nombre completo</label>
                                                 <input
                                                     type="text"
                                                     className="form-control form-control-lg mb-3"
@@ -237,12 +239,13 @@ function RegistroUsuarios() {
                                             </div>
 
                                             <div className="d-flex justify-content-end pt-3">
-                                                <input
-                                                    className="btn btn-bis"
-                                                    type="button"
-                                                    value="Registrar usuario"
-                                                    onClick={guardarUsuario}
-                                                />
+                                                <button
+                                                        className="btn btn-bis w-100"
+                                                        onClick={guardarUsuario}
+                                                    >
+                                                        <i className="bi bi-plus-circle me-2"></i>
+                                                        Agregar usuario
+                                                    </button>
                                             </div>
                                         </div>
                                     </div>

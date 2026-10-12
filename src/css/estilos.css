@@ -35,7 +35,7 @@
 }
 
 #form3Example8 {
-    font-size: 12px;    
+    font-size: 12px;
 }
 
 #div-proyecto {
@@ -61,15 +61,10 @@
     flex: 1;
 }
 
-/*#div-form-proyecto {
-    display: grid;
-    column-gap: 10px;
-    justify-content: space-between;
-    grid-auto-flow: column;
-    align-content: space-evenly;
-    align-items: baseline;
-    justify-items: stretch;
-}*/
+#div-form-proyecto {
+    max-width: 95%;
+    margin: auto;
+}
 
 #strongNombre-usuario {
     font-size: 16px;
@@ -96,8 +91,8 @@
     max-width: 95%;
     margin: auto;
     font-size: 10px;
-    margin-top: 20px;  
-    height: 100%;  
+    margin-top: 20px;
+    height: 100%;
 }
 
 #tabla-actividades thead tr th {
@@ -105,7 +100,7 @@
     color: #ffffff;
 }
 
-#card-tabla{
+#card-tabla {
     height: stretch;
     justify-content: center;
 }
@@ -120,7 +115,7 @@
     max-height: 500px;
 }
 
-#span-nota{
+#span-nota {
     font-style: italic;
     color: #005f9f;
     font-weight: bold;
@@ -136,4 +131,93 @@
 
 .react-datepicker__input-container input {
     width: 100%;
+}
+
+.card-registration {
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, .10);
+    height: auto;
+    min-height: auto;
+}
+
+.form-control,
+.form-select {
+    border-radius: 10px;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f5f8ff;
+}
+
+.btn-accion {
+    margin-right: 10px;
+}
+
+.btn-primary {
+    border-radius: 10px;
+    font-weight: 600;
+}
+
+.btn-bis {
+    background-color: #005A9C;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-weight: 600;
+    max-width: 40%;
+    margin: auto;
+    margin-bottom: 15px;
+}
+
+.btn-bis:hover {
+    background-color: #00457A;
+}
+
+.card-header-bis {
+    padding: 18px 25px;
+    margin-bottom: 20px;
+    background: linear-gradient(135deg, #005A9C, #0078D4);
+    color: white;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+#tabla-actividades thead th {
+    background-color: #f8f9fa;
+    color: #495057;
+    font-weight: 600;
+    border-bottom: 2px solid #dee2e6;    
+}
+
+.badge-proyecto {
+    background-color: #e9f2ff !important;
+    color: #005A9C !important;
+    border: 1px solid #cfe2ff;
+}
+
+.btn-sm {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+}
+
+td:last-child {
+    width: 100px;
+}
+
+.btn-outline-warning,
+.btn-outline-danger {
+    border-width: 1px;
+}
+
+.btn-outline-warning:hover {
+    background-color: #ffc107;
+}
+
+.btn-outline-danger:hover {
+    background-color: #dc3545;
 }
