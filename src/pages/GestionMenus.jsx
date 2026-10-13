@@ -1,5 +1,5 @@
 import Menu from "../components/Menu";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCatalogos } from "../hooks/useCatalogos";
 
 function GestionMenus() {
@@ -9,6 +9,10 @@ function GestionMenus() {
     const [tipo, setTipo] = useState("menu");
 
     const { menu } = useCatalogos();
+
+    const [form, setForm] = useState({
+        menuPadre: ""
+    });
 
     return (
 
@@ -258,11 +262,11 @@ function GestionMenus() {
                                             </label>
 
                                             <select className="form-select"
-                                                value={form.menu}
+                                                value={form.menuPadre}
                                                 onChange={(e) =>
                                                     setForm({
                                                         ...form,
-                                                        menu: e.target.value
+                                                        menuPadre: e.target.value
                                                     })
                                                 }>
 
